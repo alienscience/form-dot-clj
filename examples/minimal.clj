@@ -5,7 +5,7 @@
   (:require [compojure.route :as route])
   (:use hiccup.core)
   (:use form-dot-clj.core)
-  (:use form-dot-clj.html-controls))
+  (:use form-dot-clj.jquery-tools))
 
 ;;  In slime ^c^k to compile this file
 ;;  To start a webserver running this example app
@@ -15,7 +15,7 @@
 
 (def-field username
   [:maxlength 20]
-  [:pattern "\\w+" "Only alphanumeric characters please"]
+  [:pattern "[a-zA-Z]+" "Only alphanumeric characters please"]
   [:no-match #"(?i)(root|admin)" "Sorry that username is reserved"])
 
 (def-field first-name [:maxlength 50])
@@ -43,9 +43,20 @@
 
 (defn show-form []
   (html
-   [:form {:action "/" :method "post"}
-    (show-controls signup)
-    (default-submit "Sign Up")]))
+   [:head
+    [:title "Minimal Sign-up Form"]
+    [:link {:rel "stylesheet"
+            :type "text/css"
+            :href "http://static.flowplayer.org/tools/css/standalone.css"}]
+    [:link {:rel "stylesheet"
+            :type "text/css"
+            :href "http://static.flowplayer.org/tools/demos/validator/css/form.css"}]
+    (include-js "myform")]
+   [:body
+    [:form#myform {:action "/" :method "post"}
+     [:fieldset
+      (show-controls signup)
+      (default-submit "Sign Up")]]]))
   
 (defn success []
   (html

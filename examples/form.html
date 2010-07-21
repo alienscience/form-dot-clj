@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Minimal Sign-up Form</title>
+<script src="http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"></script>
+<link href="http://static.flowplayer.org/tools/css/standalone.css" rel="stylesheet" type="text/css">
+<link href="http://static.flowplayer.org/tools/demos/validator/css/form.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+  $(document).ready(function() {
+      $("#myform").validator();
+  });
+</script>
+</head>
+<body>
+<form id="myform" action="/" method="post">
+  <fieldset>
+  <p><label>username</label><input maxlength="20" name="username" pattern="[a-zA-Z]+" size="20" type="text" required="required" />
+  <p><label>first name</label><input maxlength="50" name="first-name" size="20" type="text" required="required"/></p>
+  <p><label>last name</label><input maxlength="50" name="last-name" size="20" type="text"/></p>
+  <p><label>email</label><input name="email" size="20" type="text" required="required"/></p>
+  <p><label>password</label><input maxlength="50" name="password" size="20" type="password" required="required"/></p>
+  <p><label>confirm password</label><input maxlength="50" name="confirm-password" size="20" type="password" required="required"/></p>
+  <label></label>
+  <button type="submit">Sign Up</button>
+  </fieldset>
+</form>
+</body>
+</html>

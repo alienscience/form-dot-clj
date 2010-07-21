@@ -168,7 +168,7 @@
   [label control]
   (html
    [:p
-    [:label {:for (control :name)} label]
+    [:label label]
     (show control)
     (on-error control default-error)]))
 
