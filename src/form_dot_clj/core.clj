@@ -152,20 +152,40 @@
   [k]
   (-> (name k) (.replaceAll "-" " ")))
 
-   
-(defn show-form
-  "Displays the given form with the given attributes.
+(defn default-error
+  "The default way of displaying an error"
+  [error]
+  (html
+   [:span.error error]))
+  
+(defn default-control
+  "The default way of displaying a control on a form."
+  [label control]
+  (html
+   [:p
+    [:label {:for (control :name)} label]
+    (show control)
+    (on-error control default-error)]))
+
+(defn default-submit
+  "The default way of displaying the submit button."
+  [label]
+  (html
+   [:label][:input {:type "submit" :value label}]))
+
+(defn show-controls
+  "Displays controls on the given form. 
    Optionally takes a function (fn [label control] ...)
    that can be used to generate the html surrounding a control."
-  ([form attributes]
-     (show-form form attributes default-control-format))
-  ([form attributes format-fn]
+  ([form]
+     (show-controls form default-control))
+  ([form format-fn]
      (apply str
             (map (fn [k]
                    (format-fn (make-label k)
                               (-> form :controls k)))
                  (form :display-order)))))
-
+  
 (defn on-post
   "Function that handles a form post.
    Executes success-fn on success, fail-fn on fail.

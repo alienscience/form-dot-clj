@@ -12,7 +12,8 @@
 
 (def-field first-name [:maxlength 50])
 (def-field last-name  [:maxlength 50])
-(def-field email      [:type :email "We cannot handle that email address"])
+(def-field email      [:type :email
+                       "Sorry, we cannot handle that email address"])
 (def-field password   [:maxlength 50])
 
 (defn confirm-password
@@ -32,10 +33,17 @@
   :password          (textbox password {:type "password"})
   :confirm-password  (textbox password {:type "password"}))
 
+;;==== The easy way to display a form ==========================================
+
 (defn sign-up-form-1
   "The easy way to display a form"
   []
-  (show-form signup {:action "/signup" :method "post"}))
+  (html
+   [:form {:action "/signup" :method "post"}
+    (show-controls signup)
+    (default-submit "Sign Up")]))
+
+;;==== Display a form with control over some of the HTML =======================
 
 (defn error-fn
   "Formats an error message"
@@ -43,8 +51,7 @@
   (html [:span.error error]))
 
 (defn format-control
-  "Returns the HTML for a control on a form.
-   Using Hiccup in this example."
+  "Returns the HTML for a control on a form."
   [label control]
   (html
    [:label label] (show control)
@@ -53,21 +60,15 @@
 (defn sign-up-form-2
   "With formating of each control"
   []
-  (show-form signup
-             {:action "/signup" :method "post"}
-             format-control))
+  (html
+   [:form {:action "/signup" :method "post"}
+    (show-controls signup format-control)
+    [:label][:input {:type "submit" :value "Sign Up"}]]))
 
-(defn create-user
-  "A real version of this function would write to db etc"
-  [params])
+;;==== Display a form and layout manually ======================================
 
-(defn sign-up-post-1
-  "The easy way to handle a post"
-  [params]
-  (on-post signup params create-user sign-up-form-2))
-  
 (defn sign-up-form-3
-  "Displays the sign-up form using hiccup"
+  "Displays the sign-up form"
   []
   (html
    [:form {:action "/signup" :method "post"}
@@ -85,12 +86,22 @@
     (on-error signup :confirm-password error-fn)
     [:input {:type "submit" :value "Sign Up"}]]))
 
+;;==== Handle a post ===========================================================
 
+(defn create-user
+  "A real version of this function would write to db etc"
+  [params])
+
+(defn sign-up-post-1
+  "The easy way to handle a post"
+  [params]
+  (on-post signup params create-user sign-up-form-1))
+  
 (defn sign-up-post-3
   "Handle a post with more detail"
   [params]
   (let [[validated errors] (validate signup params)]
     (if errors
-      (bind-controls params errors (sign-up-form-3))
+      (bind-controls params errors (sign-up-form-1))
       (create-user validated))))
            
