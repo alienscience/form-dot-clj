@@ -12,7 +12,7 @@
          (if (contains? field :maxlength)
            {:maxlength (first (field :maxlength))}
            {})
-         (select-keys options [:name :size :type :maxlength])
+         (select-keys options [:name :size :type :maxlength :required])
          {:Control ::Textbox}))
 
 (defmethod extend/show-html ::Textbox

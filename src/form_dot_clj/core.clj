@@ -86,11 +86,15 @@
         control (second control-tuple)
         control-name (control :name)
         param (-> control :name params)
-        result (check-until-error param (control :server-checks))]
-    [(assoc value-map control-key (result :value))
-     (if (contains? result :error)
-       (assoc error-map control-name (result :error))
-       error-map)]))
+        required (control :required)]
+    (if (and required
+             (or (nil? param) (= (.length param) 0)))
+      [value-map (assoc error-map control-name required)]
+      (let [result (check-until-error param (control :server-checks))]
+        [(assoc value-map control-key (result :value))
+         (if (contains? result :error)
+           (assoc error-map control-name (result :error))
+           error-map)]))))
 
 (defn check-controls
   "Check the values posted to the given controls.

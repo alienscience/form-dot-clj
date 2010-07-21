@@ -33,7 +33,7 @@
     nil))
                      
 (def-form signup
-  {:size 20 :required true :check-fns [confirm-password]}
+  {:size 20 :required "Required" :check-fns [confirm-password]}
   :username          (textbox username)
   :first-name        (textbox first-name)
   :last-name         (textbox last-name {:required false})
