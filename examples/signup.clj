@@ -7,8 +7,8 @@
 
 (def-field username
   [:maxlength 20]
-  [:pattern #"^\w+$" "Only alphanumeric characters please"]
-  [:not-pattern #"(?i)(root|admin)" "Sorry that username is reserved"])
+  [:pattern "\\w+" "Only alphanumeric characters please"]
+  [:no-match #"(?i)(root|admin)" "Sorry that username is reserved"])
 
 (def-field first-name [:maxlength 50])
 (def-field last-name  [:maxlength 50])

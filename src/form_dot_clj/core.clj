@@ -84,11 +84,12 @@
   [value-map error-map control-tuple params]
   (let [control-key (first control-tuple)
         control (second control-tuple)
+        control-name (control :name)
         param (-> control :name params)
         result (check-until-error param (control :server-checks))]
     [(assoc value-map control-key (result :value))
      (if (contains? result :error)
-       (assoc error-map control-key (result :error))
+       (assoc error-map control-name (result :error))
        error-map)]))
 
 (defn check-controls

@@ -13,12 +13,16 @@
       {})))
   
 (defn pattern
-  "Performs a regular expression pattern match on a string."
-  [re error-message]
+  "Performs a pattern match on a string. Pattern is a string.
+   The pattern is in the style of HTML5 and will be matched the whole string,
+   a leading ^ and trailing $ are not required."
+  [pattern error-message]
+  (let [full-match (str "^" pattern "$")
+        re (re-pattern full-match)]
   (fn [s]
-    (if-not (re-find re  s)
+    (if-not (re-find re s)
       {:error error-message}
-      {})))
+      {}))))
   
 (defvar- validation-fns
   {
@@ -36,5 +40,6 @@
 (defn generate-check-fns
   "Generate server side check functions from a field definition"
   [field]
-  (map (fn [x] (generate-check-fn x (field x)))
-       (field :validation-seq)))
+  (remove nil?
+          (map (fn [x] (generate-check-fn x (field x)))
+               (field :validation-seq))))
