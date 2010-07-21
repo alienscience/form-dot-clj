@@ -12,10 +12,18 @@
       {:error "Too long."}
       {})))
   
-
+(defn pattern
+  "Performs a regular expression pattern match on a string."
+  [re error-message]
+  (fn [s]
+    (if-not (re-find re  s)
+      {:error error-message}
+      {})))
+  
 (defvar- validation-fns
   {
    :maxlength maxlength
+   :pattern pattern
    })
 
 

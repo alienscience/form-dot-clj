@@ -44,18 +44,18 @@
      {:size 20}
      :username (textbox username)
      :password (textbox password {:type \"password\"}))"
-  [def-name options & definition]
+  [name options & definition]
   (let [form-options (select-keys options [:check-fns])
         defaults (dissoc options :check-fns)
         pairs (partition 2 definition)
-        order (vector (map first pairs))
+        order (into [] (map first pairs))
         controls (into {}
                        (map #(build-control-def defaults %)
                             pairs))
         form (merge form-options
                     {:display-order order}
                     {:controls controls})]
-    `(def ~def-name ~form)))
+    `(def ~name ~form)))
 
 (defn show
   "Generates the HTML for the control with the given key."
