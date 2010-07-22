@@ -7,7 +7,7 @@
 
 (defn include-js
   "Returns the javascript required to activate jquery-tools for the given
-   form-id e.g
+   form and form-id e.g
      (include-js the-form \"myform\")"
   [form form-id]
   (html

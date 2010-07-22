@@ -38,7 +38,7 @@
   :username          (textbox username)
   :email             (textbox email)
   :num-computers     (number-input num-computers {:size 5})
-  :dob               (date-input dob {:format "d mmmm yyyy"})
+  :dob               (date-input dob {:format "dd mmm yy"})
   ;;:ability           (range-input ability)
   )
 

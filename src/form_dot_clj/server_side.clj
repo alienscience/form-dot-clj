@@ -1,7 +1,9 @@
 
 (ns form-dot-clj.server-side
   "Server side validation checks"
-  (:use clojure.contrib.def))
+  (:use clojure.contrib.def)
+  (:use clj-time.core)
+  (:use clj-time.format))
 
 (defn maxlength
   "Performs a maxlength check on a string.
@@ -59,11 +61,22 @@
         {:error error-message}
         {}))))
 
+(def date-format (formatters :date))
+ 
 (defn check-date
   "Returns a function to check if a date is correct"
   [min-date max-date error-message]
-  (fn [s] {}))
-
+  (let [date-range (interval (parse date-format min-date)
+                             (parse date-format max-date))]
+    (fn [s]
+      (try
+        (let [d (parse date-format s)]
+          (if-not (within? date-range d)
+            {:error error-message}
+            {:value d}))
+        (catch Exception e
+          {:error error-message})))))
+            
 (defvar- validation-fns
   {:maxlength maxlength
    :pattern pattern

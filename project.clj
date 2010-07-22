@@ -1,7 +1,8 @@
 (defproject uk.org.alienscience/form-dot-clj "0.0.1"
   :description "HTML form display and validation."
   :namespaces [form-dot-clj.core]
-  :dependencies [[hiccup "0.2.6"]]
+  :dependencies [[hiccup "0.2.6"]
+                 [clj-time "0.1.0-SNAPSHOT"]]
   :dev-dependencies [[org.clojure/clojure "1.1.0"]
                      [org.clojure/clojure-contrib "1.1.0"]
                      [swank-clojure "1.2.1"]
