@@ -88,7 +88,33 @@
             {:value d}))
         (catch Exception e
           {:error error-message})))))
-            
+
+(defn check-url
+  "Returns a function to check is a url is correct.
+   Does not enforce a max length."
+  [error-message]
+  (let [re #"^\w{3,}:(//)[\w\d:#@%/;$()~_?\+-=\\\.&]{3,}$"]
+    (fn [s]
+      (if-not (re-find re s)
+        {:error error-message}
+        {}))))
+
+(defn check-match
+  "Returns a function that matches a regular expression to a string."
+  [re error-message]
+  (fn [s]
+    (if-not (re-find re s)
+      {:error error-message}
+      {})))
+   
+(defn check-no-match
+  "Returns a function that matches a regular expression to a string."
+  [re error-message]
+  (fn [s]
+    (if (re-find re s)
+      {:error error-message}
+      {})))
+
 (defvar- validation-fns
   {:maxlength maxlength
    :pattern pattern
@@ -96,7 +122,10 @@
    :integer check-integer
    :float check-float
    :email email
-   :date check-date})
+   :date check-date
+   :url check-url
+   :match check-match
+   :no-match check-no-match})
 
 
 (defn generate-check-fn

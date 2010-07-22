@@ -32,16 +32,19 @@
 (def-field ability
   [:integer 1 10 "This must be an integer between 1 and 10"])
   
-  
+(def-field home-page
+  [:maxlength 256]
+  [:url "Sorry, we cannot handle that URL"])
+
 (def-form demo
   {:size 20 :required "This field is compulsory"}
   :username          (textbox username)
   :email             (textbox email)
   :num-computers     (number-input num-computers {:size 5})
-  :ability           (range-input ability)
+  :ability           (range-input ability {:step 2})
   :dob               (date-input dob {:format "dd mmm yy"})
+  :url               (textbox home-page)
   )
-
 
 (defn stylesheet [href]
   (html

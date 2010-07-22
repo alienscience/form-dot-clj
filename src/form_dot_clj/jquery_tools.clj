@@ -36,6 +36,8 @@
            {:pattern (first (field :pattern))})
          (if (contains? field :email)
            {:type "email"})
+         (if (contains? field :url)
+           {:type "url"})
          (select-keys options [:name :size :type :maxlength :required])
          {:Control ::Textbox}))
                       
@@ -127,15 +129,16 @@
            (if num-field
              {:min (first num-field) :max (second num-field)}
              {:min 1 :max 10})
-           (select-keys options [:name :size])
+           (select-keys options [:name :step])
            {:Control ::Range-input
             :on-ready range-on-ready})))
                       
 (defmethod extend/show-html ::Range-input
   [control params]
-  (let [options [:name :min :max :size]
+  (let [options [:name :min :max :step]
         value (-> control :name params)
         attributes (merge {:type "range"}
                           (if value {:value value})
                           (select-keys control options))]
     (html [:input attributes])))
+
