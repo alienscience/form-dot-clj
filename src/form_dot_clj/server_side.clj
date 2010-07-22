@@ -23,12 +23,35 @@
     (if-not (re-find re s)
       {:error error-message}
       {}))))
-  
+
+(defn no-match
+  "Executes the given regex on a string. Returns an error
+   if there is a match"
+  [re error-message]
+  (fn [s]
+    (if (re-find re s)
+      {:error error-message}
+      {})))
+
+(defn email
+  "Returns a function to check if an email address is valid.
+   Maximum length:
+     http://stackoverflow.com/questions/386294/maximum-length-of-a-valid-email-id
+   Uses regex based on:
+     http://www.w3.org/TR/html5/states-of-the-type-attribute.html#e-mail-state"
+  [error-message]
+  (let [re #"^(?i)[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@[-a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*$"]
+    (fn [s]
+      (if-not (and (<= (.length s) 256)
+                   (re-find re s))
+        {:error error-message}
+        {}))))
+
 (defvar- validation-fns
-  {
-   :maxlength maxlength
+  {:maxlength maxlength
    :pattern pattern
-   })
+   :no-match no-match
+   :email email})
 
 
 (defn generate-check-fn

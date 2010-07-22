@@ -1,19 +1,26 @@
 
 (ns signup
-  "Example of form-dot-clj - a signup form"
-  (:use hiccup.core) ;; Optional
+  "Minimal Signup form"
+  (:use compojure.core, ring.adapter.jetty)
+  (:require [compojure.route :as route])
+  (:use hiccup.core)
   (:use form-dot-clj.core)
-  (:use form-dot-clj.html-controls))
+  (:use form-dot-clj.jquery-tools))
+
+;;  In slime ^c^k to compile this file
+;;  To start a webserver running this example app
+;; (signup/start)
+;;  To stop the webserver
+;; (signup/stop)
 
 (def-field username
   [:maxlength 20]
-  [:pattern "\\w+" "Only alphanumeric characters please"]
+  [:pattern "[a-zA-Z]+" "Only alphanumeric characters please"]
   [:no-match #"(?i)(root|admin)" "Sorry that username is reserved"])
 
 (def-field first-name [:maxlength 50])
 (def-field last-name  [:maxlength 50])
-(def-field email      [:type :email
-                       "Sorry, we cannot handle that email address"])
+(def-field email      [:email "Sorry, we cannot handle that email address"])
 (def-field password   [:maxlength 50])
 
 (defn confirm-password
@@ -25,7 +32,7 @@
     nil))
                      
 (def-form signup
-  {:size 20 :required true :check-fns [confirm-password]}
+  {:size 20 :required "Required" :check-fns [confirm-password]}
   :username          (textbox username)
   :first-name        (textbox first-name)
   :last-name         (textbox last-name {:required false})
@@ -33,75 +40,44 @@
   :password          (textbox password {:type "password"})
   :confirm-password  (textbox password {:type "password"}))
 
-;;==== The easy way to display a form ==========================================
-
-(defn sign-up-form-1
-  "The easy way to display a form"
-  []
+(defn show-form []
   (html
-   [:form {:action "/signup" :method "post"}
-    (show-controls signup)
-    (default-submit "Sign Up")]))
-
-;;==== Display a form with control over some of the HTML =======================
-
-(defn error-fn
-  "Formats an error message"
-  [error]
-  (html [:span.error error]))
-
-(defn format-control
-  "Returns the HTML for a control on a form."
-  [label control]
-  (html
-   [:label label] (show control)
-   (on-error control error-fn)))
-   
-(defn sign-up-form-2
-  "With formating of each control"
-  []
-  (html
-   [:form {:action "/signup" :method "post"}
-    (show-controls signup format-control)
-    [:label][:input {:type "submit" :value "Sign Up"}]]))
-
-;;==== Display a form and layout manually ======================================
-
-(defn sign-up-form-3
-  "Displays the sign-up form"
-  []
-  (html
-   [:form {:action "/signup" :method "post"}
-    [:label "Username"] (show signup :username)
-    (on-error signup :username error-fn)
-    [:label "First Name"] (show signup :first-name)
-    (on-error signup :first-name error-fn)
-    [:label "Last Name"] (show signup :last-name)
-    (on-error signup :last-name error-fn)
-    [:label "Email"] (show signup :email)
-    (on-error signup :email error-fn)
-    [:label "Password"] (show signup :password)
-    (on-error signup :password error-fn)
-    [:label "Confirm Password"] (show signup :confirm-password)
-    (on-error signup :confirm-password error-fn)
-    [:input {:type "submit" :value "Sign Up"}]]))
-
-;;==== Handle a post ===========================================================
-
-(defn create-user
-  "A real version of this function would write to db etc"
-  [params])
-
-(defn sign-up-post-1
-  "The easy way to handle a post"
-  [params]
-  (on-post signup params create-user sign-up-form-1))
+   [:head
+    [:title "Minimal Sign-up Form"]
+    [:link {:rel "stylesheet"
+            :type "text/css"
+            :href "http://static.flowplayer.org/tools/css/standalone.css"}]
+    [:link {:rel "stylesheet"
+            :type "text/css"
+            :href "http://static.flowplayer.org/tools/demos/validator/css/form.css"}]
+    (include-js "myform")]
+   [:body
+    [:form#myform {:action "/" :method "post"}
+     [:fieldset
+      (show-controls signup)
+      (default-submit "Sign Up")]]]))
   
-(defn sign-up-post-3
-  "Handle a post with more detail"
-  [params]
-  (let [[validated errors] (validate signup params)]
-    (if errors
-      (bind-controls params errors (sign-up-form-1))
-      (create-user validated))))
-           
+(defn success []
+  (html
+   [:h1 "Successful Post"]))
+     
+(defroutes routing
+  (GET "/" [] (show-form))
+  (POST "/" {params :params}
+    (on-post signup params success show-form))
+  (route/not-found
+   (html [:h1 "Page not found"])))
+
+(def server (atom nil))
+
+(defn stop []
+  (if-not (nil? @server)
+    (do
+      (.stop @server)
+      (reset! server nil))))
+
+(defn start []
+  (stop)
+  (let [s (run-jetty routing {:port 8081 :join? false})]
+    (reset! server  s)))
+     

@@ -30,6 +30,8 @@
            {:maxlength (first (field :maxlength))})
          (if (contains? field :pattern)
            {:pattern (first (field :pattern))})
+         (if (contains? field :email)
+           {:type "email"})
          (select-keys options [:name :size :type :maxlength :required])
          {:Control ::Textbox}))
                       

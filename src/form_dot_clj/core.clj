@@ -19,7 +19,7 @@
     (-> {}
         (into as-vectors)
         (assoc :validation-seq order))))
-    
+
 (defmacro def-field
   "Creates a var with the given name to hold a field definition.
    e.g
