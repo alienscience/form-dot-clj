@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+
+<html>
+
+<!--
+	This is a jQuery Tools standalone demo. Feel free to copy/paste.
+	                                                         
+	http://flowplayer.org/tools/demos/
+	
+	CSS files should not be referenced from flowplayer.org when in production.  
+
+	Enjoy!
+-->
+
+<head>
+	<title>jQuery Tools standalone demo</title>
+
+	<!-- include the Tools -->
+        <script src="http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"></script>
+
+	<!-- standalone page styling (can be removed) -->
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/css/standalone.css"/>	
+
+
+	<!-- dateinput styling -->
+	<link rel="stylesheet" type="text/css" href="http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css"/>
+
+
+</head>
+
+<body>	
+
+  <div> </div>
+  <form action="/">
+	<!-- HTML5 date input -->
+        <input type="hidden" id="dob" name="dob"/>
+	<input id="mydate" type="date" name="mydate" format="d mmmm yyyy"/>
+	
+	<!-- make it happen -->
+	<script>
+        $('#mydate').dateinput({
+        format: "d mmmm yyyy",
+        change: function() { $("#dob").val(this.getValue('yyyy-mm-dd')); }
+        });
+	</script>
+        <input type="submit" value="Submit">
+  </form>
+	
+</body>
+
+</html>

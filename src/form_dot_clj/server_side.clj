@@ -33,6 +33,18 @@
       {:error error-message}
       {})))
 
+(defn check-integer
+  "Returns a function to convert and check and integer."
+  [min max error-message]
+  (fn [s]
+    (try
+      (let [i (Integer. s)]
+        (if-not (and (>= i min) (<= i max))
+          {:error error-message}
+          {:value i}))
+      (catch NumberFormatException e
+        {:error error-message}))))
+      
 (defn email
   "Returns a function to check if an email address is valid.
    Maximum length:
@@ -47,11 +59,18 @@
         {:error error-message}
         {}))))
 
+(defn check-date
+  "Returns a function to check if a date is correct"
+  [min-date max-date error-message]
+  (fn [s] {}))
+
 (defvar- validation-fns
   {:maxlength maxlength
    :pattern pattern
    :no-match no-match
-   :email email})
+   :integer check-integer
+   :email email
+   :date check-date})
 
 
 (defn generate-check-fn
