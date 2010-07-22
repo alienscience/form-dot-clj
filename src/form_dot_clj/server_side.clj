@@ -36,7 +36,7 @@
       {})))
 
 (defn check-integer
-  "Returns a function to convert and check and integer."
+  "Returns a function to convert and check an integer."
   [min max error-message]
   (fn [s]
     (try
@@ -47,6 +47,18 @@
       (catch NumberFormatException e
         {:error error-message}))))
       
+(defn check-float
+  "Returns a function to convert and check a floating point number."
+  [min max error-message]
+  (fn [s]
+    (try
+      (let [f (Float. s)]
+        (if-not (and (>= f min) (<= f max))
+          {:error error-message}
+          {:value f}))
+      (catch NumberFormatException e
+        {:error error-message}))))
+
 (defn email
   "Returns a function to check if an email address is valid.
    Maximum length:
@@ -82,6 +94,7 @@
    :pattern pattern
    :no-match no-match
    :integer check-integer
+   :float check-float
    :email email
    :date check-date})
 

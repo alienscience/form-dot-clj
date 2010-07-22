@@ -11,7 +11,7 @@
      (include-js the-form \"myform\")"
   [form form-id]
   (html
-   [:script {:type "text/javascript"
+   [:script{:type "text/javascript"
              :src "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"}]
    [:script {:type "text/javascript"}
     "$(document).ready(function() {"
@@ -86,7 +86,7 @@
 (defn display-name [name] (str "dis" name))
 
 (defn date-input
-  "Creates a textbox to handle the given field"
+  "Creates a date control to handle the given field"
   [field options]
   (merge (select-keys field [:server-checks])
          (if (contains? field :date)
@@ -113,3 +113,29 @@
      [:input attributes])))
            
 
+
+;;========== Range-input =======================================================
+
+(def range-on-ready
+     (str "$(':range').rangeinput();"))
+
+(defn range-input
+  "Creates a range input to handle the given field"
+  [field options]
+  (let [num-field (or (field :integer) (field :float))]
+    (merge (select-keys field [:server-checks])
+           (if num-field
+             {:min (first num-field) :max (second num-field)}
+             {:min 1 :max 10})
+           (select-keys options [:name :size])
+           {:Control ::Range-input
+            :on-ready range-on-ready})))
+                      
+(defmethod extend/show-html ::Range-input
+  [control params]
+  (let [options [:name :min :max :size]
+        value (-> control :name params)
+        attributes (merge {:type "range"}
+                          (if value {:value value})
+                          (select-keys control options))]
+    (html [:input attributes])))

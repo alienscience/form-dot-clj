@@ -38,30 +38,32 @@
   :username          (textbox username)
   :email             (textbox email)
   :num-computers     (number-input num-computers {:size 5})
+  :ability           (range-input ability)
   :dob               (date-input dob {:format "dd mmm yy"})
-  ;;:ability           (range-input ability)
   )
 
+
+(defn stylesheet [href]
+  (html
+   [:link {:rel "stylesheet" :type "text/css" :href href}]))
 
 (defn show-form []
   (html
    [:head
-    [:title "Minimal Sign-up Form"]
-    [:link {:rel "stylesheet"
-            :type "text/css"
-            :href "http://static.flowplayer.org/tools/css/standalone.css"}]
-    [:link {:rel "stylesheet"
-            :type "text/css"
-            :href "http://static.flowplayer.org/tools/demos/validator/css/form.css"}]
-    [:link {:rel "stylesheet"
-            :type "text/css"
-            :href "http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css"}]
+    [:title "Demo Form"]
+    (stylesheet "http://static.flowplayer.org/tools/css/standalone.css")
+    (stylesheet "http://static.flowplayer.org/tools/demos/validator/css/form.css")
+    (stylesheet "http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css")
+    (stylesheet "http://static.flowplayer.org/tools/demos/rangeinput/css/skin1.css")
+    [:style {:type "text/css"}
+     ".slider { width: 200px;}"
+     ".range {display block; float: none;}"]
     (include-js demo "myform")]
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset
       (show-controls demo)
-      (default-submit "Submit")]]]))
+      [:p (default-submit "Submit")]]]]))
   
 (defn success [params]
   (html
