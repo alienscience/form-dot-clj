@@ -1,11 +1,11 @@
 
-(ns demo
+(ns jqtdemo
   "Demo of jquery tools"
   (:use compojure.core, ring.adapter.jetty)
   (:require [compojure.route :as route])
   (:use hiccup.core)
   (:use form-dot-clj.core)
-  (:use form-dot-clj.html-controls))
+  (:use form-dot-clj.jquery-tools))
 
 ;;  In slime ^c^k to compile this file
 ;;  To start a webserver running this example app
@@ -36,21 +36,13 @@
   [:maxlength 256]
   [:url "Sorry, we cannot handle that URL"])
 
-(defn fill-num-computers
-  "Function to fill a html select box"
-  []
-  (map (fn [i c] {:id i :content c})
-       (range 1 11) (range 1 11)))
-        
 (def-form demo
   {:size 20 :required "This field is compulsory"}
   :username          (textbox username)
   :email             (textbox email)
-  :num-computers     (selectbox num-computers
-                                {:size 5
-                                 :fill-fn fill-num-computers})
-;;  :ability           (range-input ability {:step 2})
-;;  :dob               (date-input dob {:format "dd mmm yy"})
+  :num-computers     (number-input num-computers {:size 5})
+  :ability           (range-input ability {:step 2})
+  :dob               (date-input dob {:format "dd mmm yy"})
   :url               (textbox home-page)
   )
 

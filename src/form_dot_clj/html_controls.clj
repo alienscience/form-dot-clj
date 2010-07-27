@@ -24,3 +24,29 @@
                           (select-keys control options))]
     (html [:input attributes])))
            
+
+;;========== Selectbox =========================================================
+
+(defn selectbox
+  "Creates a html select"
+  [field options]
+  (merge (select-keys field [:server-checks])
+         (select-keys options [:name :size :fill-fn])
+         {:fill-id (or (options :fill-id) :id)
+          :fill-content (or (options :fill-content) :content)}
+         {:Control ::Selectbox}))
+
+
+(defmethod extend/show-html ::Selectbox
+  [control params]
+  (let [options [:name :size]
+        value (-> control :name params)
+        attributes (select-keys control options)
+        {:keys [fill-fn fill-id fill-content]} control]
+    (html
+     [:select attributes
+     (for [{id fill-id content fill-content} (fill-fn)]
+       [:option (merge {:value id} (if (= value id)
+                                     {:selected "selected"}))
+        content])])))
+           
