@@ -31,7 +31,7 @@
 
 (def-field ability
   [:integer 1 10 "This must be an integer between 1 and 10"])
-  
+ 
 (def-field home-page
   [:maxlength 256]
   [:url "Sorry, we cannot handle that URL"])
