@@ -45,9 +45,10 @@
         {:keys [fill-fn fill-id fill-content]} control]
     (html
      [:select attributes
-      (for [{id fill-id content fill-content} (fill-fn)]
+      (for [{id fill-id content fill-content} (fill-fn)
+            :let [id-str (.toString id)]]
         (html
-         [:option (merge {:value id} (if (= value id)
+         [:option (merge {:value id} (if (= value id-str)
                                        {:selected "selected"}))
         content]))])))
            

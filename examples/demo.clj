@@ -1,6 +1,6 @@
 
 (ns demo
-  "Demo of jquery tools"
+  "Demo of html controls"
   (:use compojure.core, ring.adapter.jetty)
   (:require [compojure.route :as route])
   (:use hiccup.core)
@@ -46,8 +46,8 @@
   {:size 20 :required "This field is compulsory"}
   :username          (textbox username)
   :email             (textbox email)
-  :num-computers     (selectbox num-computers
-                                {:size 5
+  :num-computers     (selectbox num-computers 
+                                {:size 1 
                                  :fill-fn fill-num-computers})
 ;;  :ability           (range-input ability {:step 2})
 ;;  :dob               (date-input dob {:format "dd mmm yy"})
@@ -61,15 +61,7 @@
 (defn show-form []
   (html
    [:head
-    [:title "Demo Form"]
-    (stylesheet "http://static.flowplayer.org/tools/css/standalone.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/validator/css/form.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/rangeinput/css/skin1.css")
-    [:style {:type "text/css"}
-     ".slider { width: 200px;}"
-     ".range {display block; float: none;}"]
-    (include-js demo "myform")]
+    [:title "Demo Form"]]
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset
