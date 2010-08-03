@@ -36,12 +36,27 @@
   [:maxlength 256]
   [:url "Sorry, we cannot handle that URL"])
 
+(def-field os
+  [:pattern "(windows|linux|bsd)"
+  "Sorry, we can only handle windows, linux or bsd"])
+
+(def-field likes-demo
+  [:boolean])
+  
 (defn fill-num-computers
   "Function to fill a html select box"
   []
   (map (fn [i c] {:id i :content c})
        (range 1 11) (range 1 11)))
-        
+
+(defn fill-os
+  "Function to fill the OS radiobutton"
+  []
+  [{:id "windows" :desc "Anything by Microsoft"}
+   {:id "linux" :desc "Any flavour of Linux"}
+   {:id "bsd" :desc "Open/Free/Net BSD"}
+   {:id "macos" :desc "Mac OS"}])
+
 (def-form demo
   {:size 20 :required "This field is compulsory"}
   :username          (textbox username)
@@ -49,8 +64,10 @@
   :num-computers     (selectbox num-computers 
                                 {:size 1 
                                  :fill-fn fill-num-computers})
-;;  :ability           (range-input ability {:step 2})
-;;  :dob               (date-input dob {:format "dd mmm yy"})
+  :os                (radiobutton os {:fill-fn fill-os
+                                      :fill-keys [:id :desc]})
+  :likes-demo        (checkbox likes-demo
+                               {:label "Do you like this demo?"})
   :url               (textbox home-page)
   )
 
@@ -61,7 +78,9 @@
 (defn show-form []
   (html
    [:head
-    [:title "Demo Form"]]
+    [:title "Demo Form"]
+    [:style {:type "text/css"}
+     "label { display: block }"]]
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset

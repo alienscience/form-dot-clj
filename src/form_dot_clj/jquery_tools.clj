@@ -38,7 +38,7 @@
            {:type "email"})
          (if (contains? field :url)
            {:type "url"})
-         (select-keys options [:name :size :type :maxlength :required])
+         (select-keys options [:name :label :size :type :maxlength :required])
          {:Control ::Textbox}))
                       
 (defmethod extend/show-html ::Textbox
@@ -61,7 +61,7 @@
     (merge (select-keys field [:server-checks])
            (if num-field
              {:min (first num-field) :max (second num-field)})
-           (select-keys options [:name :size :required])
+           (select-keys options [:name :label :size :required])
            {:Control ::Number-input})))
                       
 
@@ -93,7 +93,7 @@
   (merge (select-keys field [:server-checks])
          (if (contains? field :date)
            {:min (-> field :date first) :max (-> field :date second)})
-         (select-keys options [:name :size :required])
+         (select-keys options [:name :label :size :required])
          {:Control ::Date-input
           :on-ready (date-on-ready (display-name (options :name))
                                    (options :name)
@@ -129,7 +129,7 @@
            (if num-field
              {:min (first num-field) :max (second num-field)}
              {:min 1 :max 10})
-           (select-keys options [:name :step])
+           (select-keys options [:name :label :step])
            {:Control ::Range-input
             :on-ready range-on-ready})))
                       

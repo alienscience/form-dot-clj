@@ -87,9 +87,11 @@
         control-name (control :name)
         param (-> control :name params)
         required (control :required)]
-    (if (and required
-             (or (nil? param) (= (.length param) 0)))
-      [value-map (assoc error-map control-name required)]
+    (if (or (nil? param)
+            (= (.length param) 0))
+      (if required
+        [value-map (assoc error-map control-name required)]
+        [value-map error-map])
       (let [result (check-until-error param (control :server-checks))]
         [(assoc value-map control-key (result :value))
          (if (contains? result :error)
@@ -157,6 +159,12 @@
   [k]
   (-> (name k) (.replaceAll "-" " ")))
 
+(defn get-label
+  "Gets the label for the control with the given key"
+  [form k]
+  (or (-> form :controls k :label)
+      (make-label k)))
+  
 (defn default-error
   "The default way of displaying an error"
   [error]
@@ -187,7 +195,7 @@
   ([form format-fn]
      (apply str
             (map (fn [k]
-                   (format-fn (make-label k)
+                   (format-fn (get-label form k)
                               (-> form :controls k)))
                  (form :display-order)))))
   

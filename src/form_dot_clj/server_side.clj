@@ -115,6 +115,18 @@
       {:error error-message}
       {})))
 
+(defn get-boolean
+  "Returns a function that extracts a boolean no matter what"
+  []
+  (let [re-no #"(?i)(no|false)"]
+    (fn [s]
+      (if (or (nil? s)
+              (= (.length s) 0)
+              (re-find re-no s))
+        {:value false}
+        {:value true}))))
+
+
 (defvar- validation-fns
   {:maxlength maxlength
    :pattern pattern
@@ -125,7 +137,8 @@
    :date check-date
    :url check-url
    :match check-match
-   :no-match check-no-match})
+   :no-match check-no-match
+   :boolean get-boolean})
 
 
 (defn generate-check-fn
