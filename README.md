@@ -143,5 +143,72 @@ Sets the maximum character length for a field (client,server).
 
 ## API  ##
 
-TODO: function/macro documention dump
+### form-dot-clj/bind-controls ###
 
+    ([params errors body])
+      Macro
+       Binds the given parameter and error maps so they are available to
+       form controls and then executes body.
+
+### form-dot-clj/def-field ###
+
+    ([field-name & validation])
+      Macro
+       Creates a var with the given name to hold a field definition.
+       e.g
+        (def-field username [:maxlength 20])  ;; creates (var username)
+
+### form-dot-clj/def-form ###
+
+    ([name options & definition])
+      Macro
+       Creates a var in the current namespace that contains
+       the given form definition e.g
+        (def-form login
+          {:size 20}
+          :username (textbox username)
+          :password (textbox password {:type "password"}))
+
+### form-dot-clj/default-submit ###
+
+    ([label])
+      The default way of displaying a submit button.
+
+### form-dot-clj/on-error ###
+
+     ([control error-fn] [form k error-fn])
+       Executes error-fn if the given control has an error.
+          form     - the form the control is on
+          k        - the key of the control
+          error-fn - (fn [error-message] ... )
+
+### form-dot-clj/on-post ###
+
+    ([form params success-fn fail-fn])
+      Function that handles a form post.
+      Executes success-fn on success, fail-fn on fail.
+      The success-fn takes a single parameter containing a map of validated
+      parameters.
+      The fail-fn has no parameters.
+           
+### form-dot-clj/show ###
+
+    ([control] [form k])
+      Generates the HTML for the control with the given key.
+  
+### form-dot-clj/show-controls ###
+
+    ([form] [form format-fn])
+      Displays controls on the given form.
+      Optionally takes a function (fn [label control] ...)
+      that can be used to generate the html surrounding a control.
+           
+### form-dot-clj/validate ###
+
+    ([form params])
+      Checks the values posted to the given controls.
+      Returns a two entry vector containing a map of validated values
+      and a map of error messages.
+       params    - a map of parameter names to posted values
+       form      - the form to check
+           
