@@ -2,7 +2,7 @@
 (ns signup
   "Example of form-dot-clj - a signup form"
   (:use hiccup.core) ;; Optional
-  (:use form-dot-clj.core)
+  (:use form-dot-clj)
   (:use form-dot-clj.html-controls))
 
 (def-field username
