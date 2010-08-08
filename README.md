@@ -26,7 +26,7 @@ Generating and checking HTML forms is boring and its easy to make small mistakes
 
  Using Javascript or HTML5 form handling improves the response time for users but add to the amount of code that must be written. Even when using client side validation, server checks are still needed to protect against scripts.
 
-Form-dot-clj is a Clojure library that does form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on jquery tools (TODO link) are used to provide HTML5, javascript and server side validation from the same declarations.
+Form-dot-clj is a Clojure library that does form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on [jquery tools](http://flowplayer.org/tools/release-notes/index.html#form) are used to provide HTML5, javascript and server side validation from the same declarations.
 
 This library should be usable with any HTML templating system and also provides fine grained control of the HTML that is generated.
 
@@ -111,7 +111,7 @@ We can now write a function to display the form.
            (show-controls signup)
            (default-submit "Sign Up")]))
 
-The example above uses Hiccup (TODO link) for HTML generation but other libraries can be used. The function `(show-controls form)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
+The example above uses [Hiccup](http://github.com/weavejester/hiccup) (TODO link) for HTML generation but other libraries can be used. The function `(show-controls form)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
 
 The HTML that is returned can be styled using CSS. However, if more control over the HTML is needed then it is possible to change the way each control is formatted or have full control over the form layout (TODO link).
 
@@ -124,7 +124,7 @@ Now, assuming we have a function that does the signup called `do-signup`, we nee
 
 The `on-post` function takes as arguments the form to be validated, the posted parameters, a function to call on success and a function to display the form when errors occur.
       
-If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail (TODO link). The on-post function needs to be called during a post, for instance, when using Compojure (TODO: link) to do HTTP routing:
+If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail. The on-post function needs to be called during a post, for instance, when using[Compojure](http://github.com/weavejester/compojure) to do HTTP routing:
 
     (defroutes myroutes
        (GET "/signup" [] (show-form))
@@ -156,13 +156,13 @@ A string field is converted into an integer. The integer is bounded by max and m
 A string field is converted into a floating point value. The number is bounded by max and min. If the limits are exceeded or the type conversion fails, error-message is displayed *(client, server)*.
 
     [:date min max error-message]
-An string field holding a date in the format "YYYY-MM-DD" is converted into a date object as used by the clj-time library (TODO: link) *(client, server)*. 
+An string field holding a date in the format "YYYY-MM-DD" is converted into a date object as used by the [clj-time library](http://github.com/clj-sys/clj-time) *(client, server)*. 
 
     [:url error-message]
-Checks that a string appears to be a valid URL. 
+Checks that a string appears to be a valid URL *(client, server)*. 
 
     [:boolean]
-Extracts a boolean from a string. Empty strings, and case insensitive matches to "no" or "false" are converted to `false`. Anything else is converted `true`.
+Extracts a boolean from a string. Empty strings, and case insensitive matches to "no" or "false" are converted to `false`. Anything else is converted `true` *(server)*.
 
 ## Controls ##
 
