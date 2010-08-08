@@ -32,7 +32,7 @@
   [field options]
   (let [[fill-id fill-content] (or (options :fill-keys) [:id :content])]
         (merge (select-keys field [:server-checks])
-               (select-keys options [:name :label :size :fill-fn])
+               (select-keys options [:name :label :size :fill-fn :required])
                {:fill-id fill-id :fill-content fill-content}
                {:Control ::Selectbox})))
 

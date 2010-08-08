@@ -107,14 +107,6 @@
       {:error error-message}
       {})))
    
-(defn check-no-match
-  "Returns a function that matches a regular expression to a string."
-  [re error-message]
-  (fn [s]
-    (if (re-find re s)
-      {:error error-message}
-      {})))
-
 (defn get-boolean
   "Returns a function that extracts a boolean no matter what"
   []
@@ -137,7 +129,6 @@
    :date check-date
    :url check-url
    :match check-match
-   :no-match check-no-match
    :boolean get-boolean})
 
 
