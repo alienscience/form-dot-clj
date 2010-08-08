@@ -39,7 +39,12 @@
     
 (defmacro def-form
   "Creates a var in the current namespace that contains
-   the given form definition e.g
+   the given form definition. Options is a map of key/values that
+   is merged with the options on each control - this can be used to
+   set defaults. The following special options also have meaning:
+     :check-fns    - a sequence of user defined functions that will
+                    be used to check posted values
+   example. 
    (def-form login
      {:size 20}
      :username (textbox username)
