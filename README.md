@@ -5,13 +5,17 @@ A library for handling the display and validation of forms. Supports HTML5 forms
 
 ## Example ##
 
+    (def-field username
+      [:maxlength 20]
+      [:pattern "[A-Za-z0-9]+" "Only alphanumeric characters please"])
+      
     (def-field email-address
       [:email "Sorry, that style of email address is not supported"])
 
     (def-form example 
-      {:size 20}
-      :email (textbox email-address 
-                      {:required "Please enter an email address"}))
+      {:size 20 :required "Please fill this in"}
+      :username (textbox username)
+      :email    (textbox email-address))
 
     ;; Use the following function to show the form when generating html
     (show-controls example)
@@ -24,9 +28,9 @@ A library for handling the display and validation of forms. Supports HTML5 forms
 
 Generating and checking HTML forms is boring and its easy to make small mistakes. For example, hit submit on an empty form and watch how too many web pages display unsuitable errors or even fail to spot input is missing.
 
- Using Javascript or HTML5 form handling improves the response time for users but add to the amount of code that must be written. Even when using client side validation, server checks are still needed to protect against scripts.
+ Using Javascript or HTML5 form handling improves the response time for users but means writing more code. Even when using client side validation, server checks are still needed to protect against scripts.
 
-Form-dot-clj is a Clojure library that does form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on [jquery tools](http://flowplayer.org/tools/release-notes/index.html#form) are used to provide HTML5, javascript and server side validation from the same declarations.
+Form-dot-clj is a Clojure library that attempts to remove the drudgery from form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on [jquery tools](http://flowplayer.org/tools/release-notes/index.html#form) are used to provide HTML5, javascript and server side validation from the same declarations.
 
 This library should be usable with any HTML templating system and also provides fine grained control of the HTML that is generated.
 
@@ -111,11 +115,11 @@ We can now write a function to display the form.
            (show-controls signup)
            (default-submit "Sign Up")]))
 
-The example above uses [Hiccup](http://github.com/weavejester/hiccup) (TODO link) for HTML generation but other libraries can be used. The function `(show-controls form)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
+The example above uses [Hiccup](http://github.com/weavejester/hiccup) for HTML generation but other libraries can be used. The function `(show-controls form)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
 
-The HTML that is returned can be styled using CSS. However, if more control over the HTML is needed then it is possible to change the way each control is formatted or have full control over the form layout (TODO link).
+The HTML that is returned can be styled using CSS. However, if more control over the HTML is needed then it is possible to change the way each control is formatted or have full control over the form layout. An example of this is given in the 'examples' directory.
 
-Now, assuming we have a function that does the signup called `do-signup`, we need to write code to do validation and error display when the form is posted.
+Assuming we have a function that does the signup called `do-signup`, we need to write code to do validation and error display when the form is posted.
 
     (defn signup-post
       "The easy way to handle a post"
@@ -162,7 +166,7 @@ An string field holding a date in the format "YYYY-MM-DD" is converted into a da
 Checks that a string appears to be a valid URL *(client, server)*. 
 
     [:boolean]
-Extracts a boolean from a string. Empty strings, and case insensitive matches to "no" or "false" are converted to `false`. Anything else is converted `true` *(server)*.
+Extracts a boolean from a string. A missing field, empty strings, and case insensitive matches to "no" or "false" are converted to `false`. Anything else is converted `true` *(server)*.
 
 ## Controls ##
 
@@ -179,7 +183,7 @@ The options for each control get converted into HTML attributes apart from:
 
 - `:label` Manually sets the label for the control. 
 - `:required` Indicates that a field is required and sets the error message for missing data.
-- `:fill-fn` Defines a function (with no arguments) that will be called to fill the control with values.
+- `:fill-fn` Defines a function (with no arguments) that will return a sequence of maps to fill select boxes and radio buttons.
 - `:fill-keys` By default, a sequence of maps with the keys `:id` and `:content` are used to fill select boxes and radio buttons. Setting the option `:fill-keys` to a vector such as `[:name :description]` changes the keys.
 
 ### form-dot-clj.jquery-tools ###
@@ -201,7 +205,7 @@ When using jquery-tools the following function should be called to set data in t
 
 (form form-id)
 
-Returns the javascript required to activate jquery-tools for the given form and form-id. 
+Returns the javascript required to activate jquery-tools for the given form variable with the given HTML form-id. 
 
 ## API  ##
 
@@ -236,7 +240,7 @@ set defaults. The following special options also have meaning:
    e.g. 
     (def-form login
       {:size 20}
-      :username (textbox username)
+      :username (textbox username {:size 30})
       :password (textbox password {:type "password"}))
 
 ### default-submit ###
