@@ -78,12 +78,13 @@
 (defn check-date
   "Returns a function to check if a date is correct"
   [min-date max-date error-message]
-  (let [date-range (interval (parse date-format min-date)
-                             (parse date-format max-date))]
+  (let [min-d (parse date-format min-date)
+        max-d (parse date-format max-date)]
     (fn [s]
       (try
         (let [d (parse date-format s)]
-          (if-not (within? date-range d)
+          (if (or (before? d min-d)
+                  (after? d max-d))
             {:error error-message}
             {:value d}))
         (catch Exception e
