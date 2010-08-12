@@ -85,7 +85,7 @@
   "Creates a checkbox"
   [field options]
   (merge (select-keys field [:server-checks])
-         (select-keys options [:name :label])
+         (select-keys options [:name :label :required])
          {:value (or (options :value) "yes")}
          {:Control ::Checkbox}))
 

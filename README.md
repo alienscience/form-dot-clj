@@ -124,7 +124,7 @@ Now, assuming we have a function that does the signup called `do-signup`, we nee
 
 The `on-post` function takes as arguments the form to be validated, the posted parameters, a function to call on success and a function to display the form when errors occur.
       
-If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail. The on-post function needs to be called during a post, for instance, when using[Compojure](http://github.com/weavejester/compojure) to do HTTP routing:
+If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail. The on-post function needs to be called during a post, for instance, when using [Compojure](http://github.com/weavejester/compojure) to do HTTP routing:
 
     (defroutes myroutes
        (GET "/signup" [] (show-form))
@@ -173,7 +173,7 @@ Extracts a boolean from a string. Empty strings, and case insensitive matches to
      textbox       :name :label :size :type :maxlength :required
      selectbox     :fill-keys :name :label :size :fill-fn :required
      radiobutton   :fill-keys :name :label :fill-fn
-     checkbox      :name :label :value     
+     checkbox      :name :label :value :required
 
 The options for each control get converted into HTML attributes apart from:
 
