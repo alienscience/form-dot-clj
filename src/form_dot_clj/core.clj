@@ -1,5 +1,5 @@
 
-(ns form-dot-clj 
+(ns form-dot-clj.core
   (:use clojure.contrib.def)
   (:use hiccup.core)
   (:require [form-dot-clj.server-side :as server]

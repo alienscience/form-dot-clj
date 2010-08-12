@@ -4,7 +4,7 @@
   (:use compojure.core, ring.adapter.jetty)
   (:require [compojure.route :as route])
   (:use hiccup.core)
-  (:use form-dot-clj)
+  (:use form-dot-clj.core)
   (:use form-dot-clj.jquery-tools))
 
 ;;  In slime ^c^k to compile this file
