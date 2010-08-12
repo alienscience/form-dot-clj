@@ -111,3 +111,31 @@
                   {"date-field" "date error"})
   (validate-error {"url-field" "moo"}
                   {"url-field" "url error"}))
+
+(def-form required-form
+  {:required "required"}
+  :string-field (textbox string-field)
+  :int-field (textbox int-field)
+  :float-field (textbox float-field)
+  :email-field (textbox email-field)
+  :date-field (textbox date-field)
+  :url-field (textbox url-field)
+  :bool-field (textbox bool-field)
+  :select-field (selectbox string-field)
+  :check-field (selectbox string-field))
+
+(deftest required
+  (let [[validated errors] (validate required-form {})]
+    (is (= errors
+           {"string-field" "required"
+            "int-field" "required"
+            "float-field" "required"
+            "email-field" "required"
+            "date-field" "required"
+            "url-field" "required"
+            "bool-field" "required"
+            "select-field" "required"
+            "check-field" "required"}))))
+
+            
+
