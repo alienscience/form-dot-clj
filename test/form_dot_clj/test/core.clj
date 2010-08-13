@@ -80,37 +80,37 @@
   (validate-ok {"bool-field" "no"})
   (validate-ok {"bool-field" ""})
   (validate-error {"string-field" "abcdefghijk"} 
-                  {"string-field" "Too long."})
+                  {:string-field "Too long."})
   (validate-error {"string-field" "with space"}
-                  {"string-field" "pattern error"})
+                  {:string-field "pattern error"})
   (validate-error {"string-field" "nocow"}
-                  {"string-field" "match error"})
+                  {:string-field "match error"})
   (validate-error {"string-field" "moocow"}
-                  {"string-field" "no-match error"})
+                  {:string-field "no-match error"})
   (validate-error {"int-field" "moo"}
-                  {"int-field" "integer error"})
+                  {:int-field "integer error"})
   (validate-error {"int-field" "11"}
-                  {"int-field" "integer error"})
+                  {:int-field "integer error"})
   (validate-error {"int-field" "-3"}
-                  {"int-field" "integer error"})
+                  {:int-field "integer error"})
   (validate-error {"float-field" "moo"}
-                  {"float-field" "float error"})
+                  {:float-field "float error"})
   (validate-error {"float-field" "-2.1"}
-                  {"float-field" "float error"})
+                  {:float-field "float error"})
   (validate-error {"float-field" "3"}
-                  {"float-field" "float error"})
+                  {:float-field "float error"})
   (validate-error {"email-field" "fred"}
-                  {"email-field" "email error"})
+                  {:email-field "email error"})
   (validate-error {"email-field" "fred@example#"}
-                  {"email-field" "email error"})
+                  {:email-field "email error"})
   (validate-error {"date-field" "2010-08-09"}
-                  {"date-field" "date error"})
+                  {:date-field "date error"})
   (validate-error {"date-field" "2010-08-11"}
-                  {"date-field" "date error"})
+                  {:date-field "date error"})
   (validate-error {"date-field" "moo"}
-                  {"date-field" "date error"})
+                  {:date-field "date error"})
   (validate-error {"url-field" "moo"}
-                  {"url-field" "url error"}))
+                  {:url-field "url error"}))
 
 (def-form required-form
   {:required "required"}
@@ -127,15 +127,15 @@
 (deftest required
   (let [[validated errors] (validate required-form {})]
     (is (= errors
-           {"string-field" "required"
-            "int-field" "required"
-            "float-field" "required"
-            "email-field" "required"
-            "date-field" "required"
-            "url-field" "required"
-            "bool-field" "required"
-            "select-field" "required"
-            "check-field" "required"}))))
+           {:string-field "required"
+            :int-field "required"
+            :float-field "required"
+            :email-field "required"
+            :date-field "required"
+            :url-field "required"
+            :bool-field "required"
+            :select-field "required"
+            :check-field "required"}))))
 
             
 

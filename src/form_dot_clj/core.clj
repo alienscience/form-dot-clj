@@ -34,8 +34,10 @@
   "Builds a control definition from a control tuple"
   [defaults control-tuple]
   (let [[k [fun field options]] control-tuple
-        control-name {:name (name k)}]
-   `[~k (~fun ~field (merge ~defaults ~control-name ~options))]))
+        control-name {:name (name k)}
+        control-key {:key k}]
+    `[~k (merge ~control-key
+                (~fun ~field (merge ~defaults ~control-name ~options)))]))
     
 (defmacro def-form
   "Creates a var in the current namespace that contains
@@ -89,18 +91,17 @@
   [value-map error-map control-tuple params]
   (let [control-key (first control-tuple)
         control (second control-tuple)
-        control-name (control :name)
         param (-> control :name params)
         required (control :required)]
     (if (or (nil? param)
             (= (.length param) 0))
       (if required
-        [value-map (assoc error-map control-name required)]
+        [value-map (assoc error-map control-key required)]
         [value-map error-map])
       (let [result (check-until-error param (control :server-checks))]
         [(assoc value-map control-key (result :value))
          (if (contains? result :error)
-           (assoc error-map control-name (result :error))
+           (assoc error-map control-key (result :error))
            error-map)]))))
 
 (defn- check-controls
@@ -137,7 +138,7 @@
 (defn get-control-error
   "Returns the error for the given control"
   [control]
-  (-> control :name *errors*))
+  (-> control :key *errors*))
 
 (defn on-error
   "Executes error-fn if the given control has an error.

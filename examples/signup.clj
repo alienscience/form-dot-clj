@@ -50,16 +50,17 @@
     [:link {:rel "stylesheet"
             :type "text/css"
             :href "http://static.flowplayer.org/tools/demos/validator/css/form.css"}]
-    (include-js "myform")]
+    (include-js signup "myform")]
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset
       (show-controls signup)
       (default-submit "Sign Up")]]]))
   
-(defn success []
+(defn success [params]
   (html
-   [:h1 "Successful Post"]))
+   [:h1 "Successful Post"]
+   (str params)))
      
 (defroutes routing
   (GET "/" [] (show-form))

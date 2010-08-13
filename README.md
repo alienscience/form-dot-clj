@@ -3,6 +3,8 @@
 
 A library for handling the display and validation of forms. Supports HTML5 forms, javascript validation and plain HTML.
 
+This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form)
+
 ## Example ##
 
     (def-field username
@@ -40,14 +42,14 @@ Some websites need a signup form to register users. This is how we would use for
 
     (ns signup
       "Minimal signup form"
-      (:use form-dot-clj)
+      (:use form-dot-clj.core)
       (:use form-dot-clj.html-controls))
 
 The declaration above pulls in form-dot-clj and will give us access to HTML controls. If we wanted client side valiation using jquery tools we would write:
 
     (ns signup
       "Minimal signup form"
-      (:use form-dot-clj)
+      (:use form-dot-clj.core)
       (:use form-dot-clj.jquery-tools))
 
 Form-dot-clj uses controls and fields. A control is something that appears on a HTML page. A field describes how data is validated. Form-dot-clj separates these concepts as the same field may be attached to different controls.
