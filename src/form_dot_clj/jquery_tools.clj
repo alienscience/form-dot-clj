@@ -78,14 +78,14 @@
 
 ;;========== Date-input ========================================================
 
-(defn date-on-ready
+(defn- date-on-ready
   [id target-id date-format]
   (str "$('#" id "').dateinput({"
        "format: '" date-format "',"
        "change: function() { $('#" target-id "').val(this.getValue('yyyy-mm-dd')); }"
        "});"))
 
-(defn display-name [name] (str "dis" name))
+(defn- display-name [name] (str "dis" name))
 
 (defn date-input
   "Creates a date control to handle the given field"
@@ -108,7 +108,6 @@
         value (params control-name)
         attributes (merge {:type "date" :name dn :id dn}
                           (if value {:value value})
-                          (if (control :required) {:required "required"})
                           (select-keys control options))]
     (html
      [:input {:type "hidden" :name control-name :id control-name}]
@@ -129,7 +128,7 @@
            (if num-field
              {:min (first num-field) :max (second num-field)}
              {:min 1 :max 10})
-           (select-keys options [:name :label :step])
+           (select-keys options [:name :label :step :required])
            {:Control ::Range-input
             :on-ready range-on-ready})))
                       

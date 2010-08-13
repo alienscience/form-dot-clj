@@ -5,7 +5,7 @@
   (:use clj-time.core)
   (:use clj-time.format))
 
-(defn maxlength
+(defn- maxlength
   "Performs a maxlength check on a string.
    This test should only fail when submitting using a script."
   [length]
@@ -14,7 +14,7 @@
       {:error "Too long."}
       {})))
   
-(defn pattern
+(defn- pattern
   "Performs a pattern match on a string. Pattern is a string.
    The pattern is in the style of HTML5 and will be matched the whole string,
    a leading ^ and trailing $ are not required."
@@ -26,7 +26,7 @@
       {:error error-message}
       {}))))
 
-(defn no-match
+(defn- no-match
   "Executes the given regex on a string. Returns an error
    if there is a match"
   [re error-message]
@@ -35,7 +35,7 @@
       {:error error-message}
       {})))
 
-(defn check-integer
+(defn- check-integer
   "Returns a function to convert and check an integer."
   [min max error-message]
   (fn [s]
@@ -47,7 +47,7 @@
       (catch NumberFormatException e
         {:error error-message}))))
       
-(defn check-float
+(defn- check-float
   "Returns a function to convert and check a floating point number."
   [min max error-message]
   (fn [s]
@@ -59,7 +59,7 @@
       (catch NumberFormatException e
         {:error error-message}))))
 
-(defn email
+(defn- email
   "Returns a function to check if an email address is valid.
    Maximum length:
      http://stackoverflow.com/questions/386294/maximum-length-of-a-valid-email-id
@@ -73,9 +73,9 @@
         {:error error-message}
         {}))))
 
-(def date-format (formatters :date))
+(defvar- date-format (formatters :date))
  
-(defn check-date
+(defn- check-date
   "Returns a function to check if a date is correct"
   [min-date max-date error-message]
   (let [min-d (parse date-format min-date)
@@ -90,7 +90,7 @@
         (catch Exception e
           {:error error-message})))))
 
-(defn check-url
+(defn- check-url
   "Returns a function to check is a url is correct.
    Does not enforce a max length."
   [error-message]
@@ -100,7 +100,7 @@
         {:error error-message}
         {}))))
 
-(defn check-match
+(defn- check-match
   "Returns a function that matches a regular expression to a string."
   [re error-message]
   (fn [s]
@@ -108,7 +108,7 @@
       {:error error-message}
       {})))
    
-(defn get-boolean
+(defn- get-boolean
   "Returns a function that extracts a boolean no matter what"
   []
   (let [re-no #"(?i)(no|false)"]
@@ -133,7 +133,7 @@
    :boolean get-boolean})
 
 
-(defn generate-check-fn
+(defn- generate-check-fn
   "Generate a check function for the given check"
   [check args]
   (if (contains? validation-fns check)

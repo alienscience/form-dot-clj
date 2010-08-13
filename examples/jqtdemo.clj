@@ -9,9 +9,9 @@
 
 ;;  In slime ^c^k to compile this file
 ;;  To start a webserver running this example app
-;; (demo/start)
+;; (jqtdemo/start)
 ;;  To stop the webserver
-;; (demo/stop)
+;; (jqtdemo/stop)
 
 ;; TODO: email, number and URL types, pattern, min, max, date input, range input
 
@@ -37,7 +37,7 @@
   [:url "Sorry, we cannot handle that URL"])
 
 (def-form demo
-  {:size 20 :required "This field is compulsory"}
+  {:size 20 :required "This value is required"}
   :username          (textbox username)
   :email             (textbox email)
   :num-computers     (number-input num-computers {:size 5})

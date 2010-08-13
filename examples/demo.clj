@@ -13,8 +13,6 @@
 ;;  To stop the webserver
 ;; (demo/stop)
 
-;; TODO: email, number and URL types, pattern, min, max, date input, range input
-
 (def-field username
   [:maxlength 20]
   [:pattern "[a-zA-Z]+" "Only alphanumeric characters please"]
@@ -70,10 +68,6 @@
                                {:label "Do you like this demo?"})
   :url               (textbox home-page)
   )
-
-(defn stylesheet [href]
-  (html
-   [:link {:rel "stylesheet" :type "text/css" :href href}]))
 
 (defn show-form []
   (html

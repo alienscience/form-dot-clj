@@ -70,7 +70,7 @@
      (let [control (-> form :controls k)]
        (show control))))
 
-(defn check-until-error
+(defn- check-until-error
   "Runs the given check-fns on posted parameters until an error occurs."
   [param check-fns]
   (if (empty? check-fns)
@@ -82,7 +82,7 @@
         (recur new-param (rest check-fns))))))
       
    
-(defn check-control
+(defn- check-control
   "Check the post params for the given control.
    Returns updated versions of value-map and errors-map.
    Returns on the first error."
@@ -103,7 +103,7 @@
            (assoc error-map control-name (result :error))
            error-map)]))))
 
-(defn check-controls
+(defn- check-controls
   "Check the values posted to the given controls.
     params    - a map of parameter names to posted values
     controls  - a map of the controls to check"
@@ -159,24 +159,24 @@
              *errors* ~errors]
      ~body))
 
-(defn make-label
+(defn- make-label
   "Converts a keyword into a human readable label"
   [k]
   (-> (name k) (.replaceAll "-" " ")))
 
-(defn get-label
+(defn- get-label
   "Gets the label for the control with the given key"
   [form k]
   (or (-> form :controls k :label)
       (make-label k)))
   
-(defn default-error
+(defn- default-error
   "The default way of displaying an error"
   [error]
   (html
    [:span.error error]))
   
-(defn default-control
+(defn- default-control
   "The default way of displaying a control on a form."
   [label control]
   (html
