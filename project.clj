@@ -7,7 +7,7 @@
                      [swank-clojure "1.2.1"]
                      [ring/ring-jetty-adapter "0.2.5"]
                      [compojure "0.4.1"]
-                     [net.defn/enlive "1.0.0-SNAPSHOT"]]
+                     [enlive "1.0.0-SNAPSHOT"]]
   :license {:name "Eclipse Public License - v 1.0"
             :url "http://www.eclipse.org/legal/epl-v10.html"
             :distribution :repo

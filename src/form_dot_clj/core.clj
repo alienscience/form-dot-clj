@@ -192,18 +192,23 @@
   (html
    [:label][:input {:type "submit" :value label}]))
 
+(defn map-controls
+  "Maps the controls on the given form through the given function.
+   (fn [label control] ...)"
+  ([form format-fn]
+     (map (fn [k]
+            (format-fn (get-label form k)
+                       (-> form :controls k)))
+          (form :display-order))))
+  
 (defn show-controls
-  "Displays controls on the given form. 
+  "Returns a string containing HTML for the controls on the given form.
    Optionally takes a function (fn [label control] ...)
    that can be used to generate the html surrounding a control."
   ([form]
      (show-controls form default-control))
   ([form format-fn]
-     (apply str
-            (map (fn [k]
-                   (format-fn (get-label form k)
-                              (-> form :controls k)))
-                 (form :display-order)))))
+     (apply str (map-controls form format-fn))))
   
 (defn on-post
   "Function that handles a form post.

@@ -13,15 +13,17 @@
 <body>
 <form id="myform" action="/" method="post">
   <fieldset>
-  <p><label>username</label><input maxlength="20" name="username" pattern="[a-zA-Z]+" size="20" type="text" required="required" />
+     <p><label>username</label><input maxlength="20" name="username" pattern="[a-zA-Z]+" size="20" type="text" required="required" />
+     <span style="error">Dummy error message</span>
+     </p>
   <p><label>first name</label><input maxlength="50" name="first-name" size="20" type="text" required="required"/></p>
   <p><label>last name</label><input maxlength="50" name="last-name" size="20" type="text"/></p>
   <p><label>email</label><input name="email" size="20" type="text" required="required"/></p>
   <p><label>password</label><input maxlength="50" name="password" size="20" type="password" required="required"/></p>
   <p><label>confirm password</label><input maxlength="50" name="confirm-password" size="20" type="password" required="required"/></p>
   <label></label>
-  <button type="submit">Sign Up</button>
   </fieldset>
+  <button type="submit">Sign Up</button>
 </form>
 </body>
 </html>
