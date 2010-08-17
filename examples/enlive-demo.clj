@@ -66,7 +66,7 @@
 (defroutes routing
   (GET "/" [] (show-form))
   (POST "/" {params :params}
-    (on-post demo params success show-form-2))
+    (on-post demo params success show-form))
   (route/not-found
    "<h1>Page not found</h1>"))
 

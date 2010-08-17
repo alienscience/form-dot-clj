@@ -37,53 +37,53 @@
 
 (defn sign-up-form-1
   "The easy way to display a form"
-  []
+  [params errors]
   (html
    [:form {:action "/signup" :method "post"}
-    (show-controls signup)
+    (show-controls signup params errors)
     (default-submit "Sign Up")]))
 
 ;;==== Display a form with control over some of the HTML =======================
 
-(defn error-fn
-  "Formats an error message"
-  [error]
-  (html [:span.error error]))
-
 (defn format-control
   "Returns the HTML for a control on a form."
-  [label control]
+  [label control-html error]
   (html
-   [:label label] (show control)
-   (on-error control error-fn)))
+   [:label label] control-html
+   (if error [:span.error error])))
    
 (defn sign-up-form-2
   "With formating of each control"
-  []
+  [params errors]
   (html
    [:form {:action "/signup" :method "post"}
-    (show-controls signup format-control)
+    (show-controls signup params errors format-control)
     [:label][:input {:type "submit" :value "Sign Up"}]]))
 
 ;;==== Display a form and layout manually ======================================
 
+(defn error-fn
+  "A function that formats errors"
+  [error]
+  [:span.error error])
+
 (defn sign-up-form-3
   "Displays the sign-up form"
-  []
+  [params errors]
   (html
    [:form {:action "/signup" :method "post"}
-    [:label "Username"] (show signup :username)
-    (on-error signup :username error-fn)
-    [:label "First Name"] (show signup :first-name)
-    (on-error signup :first-name error-fn)
-    [:label "Last Name"] (show signup :last-name)
-    (on-error signup :last-name error-fn)
-    [:label "Email"] (show signup :email)
-    (on-error signup :email error-fn)
-    [:label "Password"] (show signup :password)
-    (on-error signup :password error-fn)
-    [:label "Confirm Password"] (show signup :confirm-password)
-    (on-error signup :confirm-password error-fn)
+    [:label "Username"] (show signup :username params)
+    (on-error errors :username error-fn)
+    [:label "First Name"] (show signup :first-name params)
+    (on-error errors :first-name error-fn)
+    [:label "Last Name"] (show signup :last-name params)
+    (on-error errors :last-name error-fn)
+    [:label "Email"] (show signup :email params)
+    (on-error errors :email error-fn)
+    [:label "Password"] (show signup :password params)
+    (on-error errors :password error-fn)
+    [:label "Confirm Password"] (show signup :confirm-password params)
+    (on-error errors :confirm-password error-fn)
     [:input {:type "submit" :value "Sign Up"}]]))
 
 ;;==== Handle a post ===========================================================

@@ -5,9 +5,6 @@
   (:require [form-dot-clj.server-side :as server]
             [form-dot-clj.extend :as extend]))
 
-;;======== Variables for binding ===============================================
-(defvar- *params* {} "Parameters posted from a form")
-(defvar- *errors* {} "Validation errors")
 
 (defn- build-field-def
   "Builds a field definition datastructure from a field definition"
@@ -66,11 +63,11 @@
 
 (defn show
   "Generates the HTML for the control with the given key."
-  ([control]
-     (extend/show-html control *params*))
-  ([form k]
+  ([control params]
+     (extend/show-html control params))
+  ([form k params]
      (let [control (-> form :controls k)]
-       (show control))))
+       (show control params))))
 
 (defn- check-until-error
   "Runs the given check-fns on posted parameters until an error occurs."
@@ -135,31 +132,15 @@
                 error-map)]
     [value-map (if (empty? errors) nil errors)]))
 
-(defn get-control-error
-  "Returns the error for the given control"
-  [control]
-  (-> control :key *errors*))
-
 (defn on-error
-  "Executes error-fn if the given control has an error.
-   form     - the form the control is on
+  "Executes error-fn when an error occurs.
+   errors   - the error map
    k        - the key of the control
    error-fn - (fn [error-message] ... )"
-  ([control error-fn]
-     (if-let [error (get-control-error control)]
-       (error-fn error)))
-  ([form k error-fn]
-     (let [control (-> form :controls k)]
-       (on-error control error-fn))))
+  [errors k error-fn]
+  (if-let [error (errors k)]
+    (error-fn error)))
     
-(defmacro bind-controls
-  "Binds the given parameter and error maps so they are available to
-   form controls and then executes body."
-  [params errors body]
-  `(binding [*params* ~params
-             *errors* ~errors]
-     ~body))
-
 (defn- make-label
   "Converts a keyword into a human readable label"
   [k]
@@ -171,20 +152,13 @@
   (or (-> form :controls k :label)
       (make-label k)))
   
-(defn- default-error
-  "The default way of displaying an error"
-  [error]
-  (html
-   [:span.error error]))
-  
 (defn- default-control
   "The default way of displaying a control on a form."
-  [label control]
+  [label control-html error]
   (html
    [:p
-    [:label label]
-    (show control)
-    (on-error control default-error)]))
+    [:label label] control-html
+    (if error [:span.error error])]))
 
 (defn default-submit
   "The default way of displaying the submit button."
@@ -194,21 +168,22 @@
 
 (defn map-controls
   "Maps the controls on the given form through the given function.
-   (fn [label control] ...)"
-  ([form format-fn]
+   (fn [label control-html error] ...)"
+  ([form params errors format-fn]
      (map (fn [k]
             (format-fn (get-label form k)
-                       (-> form :controls k)))
+                       (show form k params)
+                       (errors k)))
           (form :display-order))))
   
 (defn show-controls
   "Returns a string containing HTML for the controls on the given form.
-   Optionally takes a function (fn [label control] ...)
+   Optionally takes a function (fn [label control-html error] ...)
    that can be used to generate the html surrounding a control."
-  ([form]
-     (show-controls form default-control))
-  ([form format-fn]
-     (apply str (map-controls form format-fn))))
+  ([form params errors]
+     (show-controls form params errors default-control))
+  ([form params errors format-fn]
+     (apply str (map-controls form params errors format-fn))))
   
 (defn on-post
   "Function that handles a form post.
@@ -219,6 +194,6 @@
   [form params success-fn fail-fn]
   (let [[validated errors] (validate form params)]
     (if errors
-      (bind-controls params errors (fail-fn))
+      (fail-fn params errors)
       (success-fn validated))))
            

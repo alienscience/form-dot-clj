@@ -50,7 +50,7 @@
   (html
    [:link {:rel "stylesheet" :type "text/css" :href href}]))
 
-(defn show-form []
+(defn show-form [params errors]
   (html
    [:head
     [:title "Demo Form"]
@@ -65,7 +65,7 @@
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset
-      (show-controls demo)
+      (show-controls demo params errors)
       [:p (default-submit "Submit")]]]]))
   
 (defn success [params]
@@ -74,7 +74,7 @@
    (str params)))
      
 (defroutes routing
-  (GET "/" [] (show-form))
+  (GET "/" [] (show-form {} {}))
   (POST "/" {params :params}
     (on-post demo params success show-form))
   (route/not-found

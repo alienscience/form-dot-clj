@@ -40,7 +40,7 @@
   :password          (textbox password {:type "password"})
   :confirm-password  (textbox password {:type "password"}))
 
-(defn show-form []
+(defn show-form [params errors]
   (html
    [:head
     [:title "Minimal Sign-up Form"]
@@ -54,7 +54,7 @@
    [:body
     [:form#myform {:action "/" :method "post"}
      [:fieldset
-      (show-controls signup)
+      (show-controls signup params errors)
       (default-submit "Sign Up")]]]))
   
 (defn success [params]
@@ -63,7 +63,7 @@
    (str params)))
      
 (defroutes routing
-  (GET "/" [] (show-form))
+  (GET "/" [] (show-form {} {}))
   (POST "/" {params :params}
     (on-post signup params success show-form))
   (route/not-found
