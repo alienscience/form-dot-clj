@@ -7,6 +7,13 @@
    (:use form-dot-clj.core)
    (:use form-dot-clj.jquery-tools))
 
+;;  Run slime or a repl in the form-dot-clj directory
+;;  In slime ^c^k to compile this file
+;;  To start a webserver running this example app
+;; (enlive-demo/start)
+;;  To stop the webserver
+;; (enlive-demo/stop)
+
 (def-field username
   [:maxlength 20]
   [:pattern "[a-zA-Z]+" "Only alphanumeric characters please"]
@@ -38,23 +45,23 @@
 
 ;; form-dot-clj simply replaces everything in the fieldset
 (deftemplate show-form (java.io.File. "examples/form.html")
-  []
-  [:fieldset] (html-content (show-controls demo)))
+  [params errors]
+  [:fieldset] (html-content (show-controls demo params errors)))
 
 ;;====== Display a form using the HTML file as a template ======================
 
-;; This snippet uses the first control in the fieldset as template
+;; This snippet uses the first control in the fieldset as a template
 (defsnippet format-control
   (java.io.File. "examples/form.html") [:fieldset [:p (nth-of-type 1)]]
-  [label control]
+  [label control-html error]
   [:label] (content label)
-  [:input] (substitute (html-snippet (show control)))
-  [:.error] (on-error control content))
+  [:input] (substitute (html-snippet control-html))
+  [:.error] (if error (content error) (substitute "")))
 
-;; This template puts the form into the fieldset
+;; This template puts the form into the fieldset using the snippet above
 (deftemplate show-form-2 (java.io.File. "examples/form.html")
-  []
-  [:fieldset] (content (map-controls demo format-control)))
+  [params errors]
+  [:fieldset] (content (map-controls demo params errors format-control)))
 
 
 ;;====== routing ===============================================================
@@ -64,7 +71,7 @@
   [:fieldset] (content (str params)))
 
 (defroutes routing
-  (GET "/" [] (show-form))
+  (GET "/" [] (show-form-2 {} {}))
   (POST "/" {params :params}
     (on-post demo params success show-form))
   (route/not-found
