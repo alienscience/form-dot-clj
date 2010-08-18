@@ -62,7 +62,7 @@
     `(def ~name ~form)))
 
 (defn show
-  "Generates the HTML for the control with the given key."
+  "Generates the HTML for the control with the given key using the given posted parameters."
   ([control params]
      (extend/show-html control params))
   ([form k params]
@@ -190,7 +190,9 @@
    Executes success-fn on success, fail-fn on fail.
    The success-fn takes a single parameter containing a map of validated
    parameters.
-   The fail-fn has no parameters."
+   The fail-fn is assumed to redisplay the form and has the parameters:
+      params   - the posted form parameters
+      errors   - a map of errors"
   [form params success-fn fail-fn]
   (let [[validated errors] (validate form params)]
     (if errors

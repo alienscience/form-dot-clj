@@ -3,7 +3,8 @@
 
 A library for handling the display and validation of forms. Supports HTML5 forms, javascript validation and plain HTML.
 
-This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form)
+This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form) for use with Leiningen/Maven
+     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.2"]]
 
 ## Example ##
 
@@ -20,7 +21,7 @@ This and other form validation libraries are available on [clojars](http://cloja
       :email    (textbox email-address))
 
     ;; Use the following function to show the form when generating html
-    (show-controls example)
+    (show-controls example params errors)
 
     ;; Use the following function to validate a post of this form
     (on-post example params success-fn failure-fn)
@@ -34,7 +35,7 @@ Generating and checking HTML forms is boring and its easy to make small mistakes
 
 Form-dot-clj is a Clojure library that attempts to remove the drudgery from form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on [jquery tools](http://flowplayer.org/tools/release-notes/index.html#form) are used to provide HTML5, javascript and server side validation from the same declarations.
 
-This library should be usable with any HTML templating system and also provides fine grained control of the HTML that is generated.
+This library should be usable with any HTML templating system and also provides fine grained control of the HTML that is generated. The examples directory contains a file `signup-doc.clj` that shows different levels of HTML generation.
 
 ## Walkthrough ##
 
@@ -111,15 +112,15 @@ We can now write a function to display the form.
 
     (defn show-form
       "The easy way to display a form"
-      []
+      [params errors]
       (html
         [:form {:action "/signup" :method "post"}
-           (show-controls signup)
+           (show-controls signup params errors)
            (default-submit "Sign Up")]))
 
-The example above uses [Hiccup](http://github.com/weavejester/hiccup) for HTML generation but other libraries can be used. The function `(show-controls form)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
+The example above uses [Hiccup](http://github.com/weavejester/hiccup) for HTML generation but other libraries can be used. In the examples directory is a demonstration of form-dot-clj being used with [Enlive](http://cgrand.github.com/enlive/). The function `(show-controls form params errors)` returns the controls as HTML. The function `(default-submit "Label")` returns a HTML submit button with similar formatting. 
 
-The HTML that is returned can be styled using CSS. However, if more control over the HTML is needed then it is possible to change the way each control is formatted or have full control over the form layout. An example of this is given in the 'examples' directory.
+The HTML that is returned can be styled using CSS. However, if more control over the HTML is needed then it is possible to change the way each control is formatted or have full control over the form layout.
 
 Assuming we have a function that does the signup called `do-signup`, we need to write code to do validation and error display when the form is posted.
 
@@ -130,14 +131,16 @@ Assuming we have a function that does the signup called `do-signup`, we need to 
 
 The `on-post` function takes as arguments the form to be validated, the posted parameters, a function to call on success and a function to display the form when errors occur.
       
-If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail. The on-post function needs to be called during a post, for instance, when using [Compojure](http://github.com/weavejester/compojure) to do HTTP routing:
+If more control is needed when a form is posted then lowerlevel functions are available to handle the post in more detail. The file `signup-doc.clj` in the examples directory shows how this is done.
+
+The on-post function needs to be called during a post, for instance, when using [Compojure](http://github.com/weavejester/compojure) to do HTTP routing:
 
     (defroutes myroutes
-       (GET "/signup" [] (show-form))
+       (GET "/signup" [] (show-form {} {}))
        (POST "/signup" {params params}
           (signup-post params)))
 
-To see how this fits together, runnable web applications are given in the 'examples' directory.
+To see how this fits together, runnable web applications are given in the 'examples' directory. It is recommended that you look at these before the more detailed documentation below.
           
 ## Validation ##
 
@@ -211,13 +214,6 @@ Returns the javascript required to activate jquery-tools for the given form vari
 
 ## API  ##
 
-### bind-controls ###
-
-([params errors body])
-
-*Macro* Binds the given parameter and error maps so they are available to
-form controls and then executes body.
-
 ### def-field ###
 
 ([field-name & validation])
@@ -251,13 +247,20 @@ set defaults. The following special options also have meaning:
 
 The default way of displaying a submit button.
 
+### map-controls ###
+
+([form params errors format-fn])
+
+Maps the controls on the given form through the given function.
+    (format-fn [label control-html error] ...)
+
 ### on-error ###
 
-([control error-fn] [form k error-fn])
+([errors k error-fn])
 
 Executes error-fn if the given control has an error.
 
-    form     - the form the control is on
+    errors   - the error map
     k        - the key of the control
     error-fn - (fn [error-message] ... )
 
@@ -269,20 +272,22 @@ Function that handles a form post.
 Executes success-fn on success, fail-fn on fail.
 The success-fn takes a single parameter containing a map of validated
 parameters.
-The fail-fn has no parameters.
+The fail-fn is assumed to redisplay the form and has the parameters:
+    params  - the posted form parameters
+    errors  - a map of errors
            
 ### show ###
 
-([control] [form k])
+([control params] [form k params])
 
-Generates the HTML for the control with the given key.
+Generates the HTML for the control with the given key using the given posted parameters.
   
 ### show-controls ###
 
-([form] [form format-fn])
+([form params errors] [form params errors format-fn])
 
-Displays controls on the given form.
-Optionally takes a function (fn [label control] ...)
+Returns a string containing HTML for the controls on the given form.
+Optionally takes a function (fn [label control-html error] ...)
 that can be used to generate the html surrounding a control.
            
 ### validate ###
