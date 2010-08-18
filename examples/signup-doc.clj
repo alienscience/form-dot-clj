@@ -102,6 +102,6 @@
   [params]
   (let [[validated errors] (validate signup params)]
     (if errors
-      (bind-controls params errors (sign-up-form-1))
+      (sign-up-form-1 params errors)
       (create-user validated))))
            
