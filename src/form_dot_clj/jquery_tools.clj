@@ -1,9 +1,18 @@
 
 (ns form-dot-clj.jquery-tools
   (:require [form-dot-clj.extend :as extend])
-  (:use hiccup.core))
+  (:use hiccup.core)
+  (:require [hiccup.page-helpers :as ph])
+  (:use form-dot-clj.js-utils)
+  (:use com.reasonr.scriptjure))
 
 ;;========== Javascript includes ===============================================
+
+(defn controls-on-ready
+  "Returns the javascript to be run on-ready for each control"
+  (remove nil?
+          (map :on-ready
+               (vals (form :controls)))))
 
 (defn include-js
   "Returns the javascript required to activate jquery-tools for the given
@@ -11,8 +20,15 @@
      (include-js the-form \"myform\")"
   [form form-id]
   (html
-   [:script{:type "text/javascript"
-             :src "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"}]
+   (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
+   (script
+    (on-ready
+     (js*
+      (.validator (clj (html-id form-id)))
+      (clj (controls-on-ready form))
+      )))))
+
+   ;; old below
    [:script {:type "text/javascript"}
     "$(document).ready(function() {"
     (str "$(\"#" form-id "\").validator();")
@@ -21,6 +37,7 @@
           :when onr]
       onr)
     "});"]))
+
 
                 
 
