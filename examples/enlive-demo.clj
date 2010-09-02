@@ -77,7 +77,7 @@
   (route/not-found
    "<h1>Page not found</h1>"))
 
-(def server (atom nil))
+(defonce server (atom nil))
 
 (defn stop []
   (if-not (nil? @server)

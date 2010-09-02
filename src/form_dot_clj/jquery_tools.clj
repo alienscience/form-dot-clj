@@ -3,16 +3,19 @@
   (:require [form-dot-clj.extend :as extend])
   (:use hiccup.core)
   (:require [hiccup.page-helpers :as ph])
-  (:use form-dot-clj.js-utils)
-  (:use com.reasonr.scriptjure))
+  (:require [form-dot-clj.js-dot-clj :as js])
+  (:use clojure.contrib.strint))
 
 ;;========== Javascript includes ===============================================
 
 (defn controls-on-ready
-  "Returns the javascript to be run on-ready for each control"
-  (remove nil?
-          (map :on-ready
-               (vals (form :controls)))))
+  "Inserts the javascript to be run on-ready for each control"
+  [form]
+  (apply str
+         (remove nil?
+                 (map :on-ready
+                      (vals (form :controls))))))
+    
 
 (defn include-js
   "Returns the javascript required to activate jquery-tools for the given
@@ -21,26 +24,15 @@
   [form form-id]
   (html
    (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
-   (script
-    (on-ready
-     (js*
-      (.validator (clj (html-id form-id)))
-      (clj (controls-on-ready form))
-      )))))
-
-   ;; old below
    [:script {:type "text/javascript"}
-    "$(document).ready(function() {"
-    (str "$(\"#" form-id "\").validator();")
-    (for [c (vals (form :controls))
-          :let [onr (c :on-ready)]
-          :when onr]
-      onr)
-    "});"]))
+    (js/js
+     [:.ready :$document
+      [:function []
+       [:.validator (js/id form-id)]
+       (controls-on-ready form)]])]))
 
-
-                
-
+    
+  
 ;;========== Textbox ===========================================================
 
 (defn textbox
@@ -95,12 +87,13 @@
 
 ;;========== Date-input ========================================================
 
-(defn- date-on-ready
+(defn date-on-ready
   [id target-id date-format]
-  (str "$('#" id "').dateinput({"
-       "format: '" date-format "',"
-       "change: function() { $('#" target-id "').val(this.getValue('yyyy-mm-dd')); }"
-       "});"))
+  (let [js-id (js/id id)
+        js-target (js/id target-id)]
+    (str
+     (<< "~{js-id}.dateinput({format: '~{date-format}', ")
+     (<< "change: function() { ~{js-target}.val(this.getValue('yyyy-mm-dd'))}});"))))
 
 (defn- display-name [name] (str "dis" name))
 
@@ -135,7 +128,7 @@
 ;;========== Range-input =======================================================
 
 (def range-on-ready
-     (str "$(':range').rangeinput();"))
+     (js/js [:.rangeinput :$:range]))
 
 (defn range-input
   "Creates a range input to handle the given field"
