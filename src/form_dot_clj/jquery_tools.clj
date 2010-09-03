@@ -87,13 +87,13 @@
 
 ;;========== Date-input ========================================================
 
-(defn date-on-ready
+(defn- date-on-ready
   [id target-id date-format]
-  (let [js-id (js/id id)
-        js-target (js/id target-id)]
-    (str
-     (<< "~{js-id}.dateinput({format: '~{date-format}', ")
-     (<< "change: function() { ~{js-target}.val(this.getValue('yyyy-mm-dd'))}});"))))
+  (js/js
+   [:.dateinput (js/id id)
+    {:format (js/quoted date-format)
+     :change [:function []
+              [:.val (js/id target-id) [:.getValue :this "yyyy-mm-dd"]]]}]))
 
 (defn- display-name [name] (str "dis" name))
 

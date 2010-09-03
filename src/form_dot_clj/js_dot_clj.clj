@@ -11,7 +11,11 @@
 ;; States
 (declare start first-arg rest-args
          method-call function-def
-         block block-start finish)
+         block block-start finish
+         start-map map-entry)
+
+;; External functions used internally
+(declare quoted)
 
 (defn- lazy-fsm
   ([todo]
@@ -23,7 +27,8 @@
 (defn- convert-keyword [kw]
   (let [word (name kw)
         one (first word)
-        two (.substring word 0 2)]
+        two (if (> (.length word) 1)
+              (.substring word 0 2))]
     (cond
       (= "$:" two)     (str "$(\":" (.substring word 2) "\")")
       (= "$#" two)     (str "$(\"#" (.substring word 2) "\")")
@@ -33,9 +38,13 @@
 (defn- convert [form state]
   (cond
     (keyword? form)       (convert-keyword form)
+    (string? form)        (quoted form)
     (vector? form)        (lazy-fsm start
                                     (update-in state [:nesting] inc)
                                     form)
+    (map? form)           (lazy-fsm start-map
+                                    (update-in state [:nesting] inc)
+                                    (seq form))
     :else form))
 
 (defn- start [state todo]
@@ -107,6 +116,29 @@
     (if (<= nesting 1)
       ";")))
 
+(defn- start-map [state todo]
+  (if (empty? todo)
+    "{}"
+    (let [[k v] (first todo)
+          k-item (convert k state)
+          v-item (convert v state)]
+      (cons "{"
+            (cons k-item
+                  (cons ": "
+                        (cons v-item
+                              (lazy-fsm map-entry state (rest todo)))))))))
+
+(defn- map-entry [state todo]
+  (if (empty? todo)
+    "}"
+    (let [[k v] (first todo)
+          k-item (convert k state)
+          v-item (convert v state)]
+      (cons ","
+            (cons k-item
+                  (cons ": "
+                        (cons v-item
+                              (lazy-fsm map-entry state (rest todo)))))))))
 
 ;;======== Flatten strings ============
 
@@ -114,8 +146,8 @@
   (if (and (seq? b) (not (list? b)))
     (reduce cat-strings acc b)
     (let [a (peek acc)]
-      (if (and (string? a)
-               (or (char? b) (string? b)))
+      (if (and (or (string? a) (char? a) (number? a))
+               (or (char? b) (string? b) (number? b)))
         (conj (pop acc) (str a b))
         (conj acc b)))))
 
@@ -131,3 +163,8 @@
 
 (defn id [value]
   (str "$(\"#" value "\")"))
+
+(defn quoted
+  "Quote the given string"
+  [s]
+  (str "\"" s "\""))
