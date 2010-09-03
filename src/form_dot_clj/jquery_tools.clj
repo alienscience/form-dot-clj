@@ -1,9 +1,21 @@
 
 (ns form-dot-clj.jquery-tools
   (:require [form-dot-clj.extend :as extend])
-  (:use hiccup.core))
+  (:use hiccup.core)
+  (:require [hiccup.page-helpers :as ph])
+  (:require [form-dot-clj.js-dot-clj :as js])
+  (:use clojure.contrib.strint))
 
 ;;========== Javascript includes ===============================================
+
+(defn controls-on-ready
+  "Inserts the javascript to be run on-ready for each control"
+  [form]
+  (apply str
+         (remove nil?
+                 (map :on-ready
+                      (vals (form :controls))))))
+    
 
 (defn include-js
   "Returns the javascript required to activate jquery-tools for the given
@@ -11,19 +23,16 @@
      (include-js the-form \"myform\")"
   [form form-id]
   (html
-   [:script{:type "text/javascript"
-             :src "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js"}]
+   (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
    [:script {:type "text/javascript"}
-    "$(document).ready(function() {"
-    (str "$(\"#" form-id "\").validator();")
-    (for [c (vals (form :controls))
-          :let [onr (c :on-ready)]
-          :when onr]
-      onr)
-    "});"]))
+    (js/js
+     [:.ready :$document
+      [:function []
+       [:.validator (js/id form-id)]
+       (controls-on-ready form)]])]))
 
-                
-
+    
+  
 ;;========== Textbox ===========================================================
 
 (defn textbox
@@ -80,10 +89,11 @@
 
 (defn- date-on-ready
   [id target-id date-format]
-  (str "$('#" id "').dateinput({"
-       "format: '" date-format "',"
-       "change: function() { $('#" target-id "').val(this.getValue('yyyy-mm-dd')); }"
-       "});"))
+  (js/js
+   [:.dateinput (js/id id)
+    {:format (js/quoted date-format)
+     :change [:function []
+              [:.val (js/id target-id) [:.getValue :this "yyyy-mm-dd"]]]}]))
 
 (defn- display-name [name] (str "dis" name))
 
@@ -118,7 +128,7 @@
 ;;========== Range-input =======================================================
 
 (def range-on-ready
-     (str "$(':range').rangeinput();"))
+     (js/js [:.rangeinput :$:range]))
 
 (defn range-input
   "Creates a range input to handle the given field"
