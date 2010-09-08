@@ -3,7 +3,7 @@
   (:use clojure.test)
   (:use form-dot-clj.core)
   (:use form-dot-clj.html-controls)
-  (:use clj-time.core))
+  (:require [clj-time.core :as joda]))
 
 (def-field string-field
   [:maxlength 10]
@@ -17,6 +17,11 @@
 (def-field date-field [:date "2010-08-18" "2010-08-19" "date error"])
 (def-field url-field [:url "url error"])
 (def-field bool-field [:boolean])
+(def-field for-html-element [:xss->element])
+(def-field for-html-attribute [:xss->attribute])
+(def-field for-js-data [:xss->js-data])
+(def-field for-css-value [:xss->css])
+(def-field for-url [:xss->url])
 
 (def-form test-form
   {}
@@ -26,7 +31,13 @@
   :email-field (textbox email-field)
   :date-field (textbox date-field)
   :url-field (textbox url-field)
-  :bool-field (textbox bool-field))
+  :bool-field (textbox bool-field)
+  :html-element-field (textbox for-html-element)
+  :html-attribute-field (textbox for-html-attribute)
+  :js-data-field (textbox for-js-data)
+  :css-value-field (textbox for-css-value)
+  :url-value-field (textbox for-url)
+  )
 
 (defn has-value
   "Checks that the given param map converts to the given value
@@ -43,14 +54,21 @@
   (has-value {"float-field" "-0.8"}
              {:float-field (Float. -0.8)})
   (has-value {"date-field" "2010-08-18"}
-             {:date-field (date-time 2010 8 18)})
+             {:date-field (joda/date-time 2010 8 18)})
   (has-value {"bool-field" "yes"} {:bool-field true})
   (has-value {"bool-field" "true"} {:bool-field true})
   (has-value {"bool-field" "NO"} {:bool-field false})
   (has-value {"bool-field" "no"} {:bool-field false})
   (has-value {"bool-field" "false"} {:bool-field false})
   (has-value {"bool-field" "FALSE"} {:bool-field false}))
-  
+
+(deftest xss
+  (has-value
+   {"html-element-field" "&<>\"'/hello"}
+   {:html-element-field "&amp;&lt;&gt;&quot;&#x27;&#x2F;hello"})
+  (has-value
+   {"html-attribute-field" ""}))
+
 (defn validate-ok
   "Checks that the given parameters validate with no errors"
   [params]
