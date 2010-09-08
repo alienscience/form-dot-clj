@@ -2,8 +2,9 @@
 (ns form-dot-clj.server-side
   "Server side validation checks"
   (:use clojure.contrib.def)
-  (:use clj-time.core)
-  (:use clj-time.format))
+  (:require [clojure.contrib.string :as str])
+  (:require [clj-time.core :as joda])
+  (:require [clj-time.format :as joda-format]))
 
 (defn- maxlength
   "Performs a maxlength check on a string.
@@ -73,18 +74,18 @@
         {:error error-message}
         {}))))
 
-(defvar- date-format (formatters :date))
+(defvar- date-format (joda-format/formatters :date))
  
 (defn- check-date
   "Returns a function to check if a date is correct"
   [min-date max-date error-message]
-  (let [min-d (parse date-format min-date)
-        max-d (parse date-format max-date)]
+  (let [min-d (joda-format/parse date-format min-date)
+        max-d (joda-format/parse date-format max-date)]
     (fn [s]
       (try
-        (let [d (parse date-format s)]
-          (if (or (before? d min-d)
-                  (after? d max-d))
+        (let [d (joda-format/parse date-format s)]
+          (if (or (joda/before? d min-d)
+                  (joda/after? d max-d))
             {:error error-message}
             {:value d}))
         (catch Exception e
@@ -120,6 +121,78 @@
         {:value true}))))
 
 
+(defn- xss-for-html-element
+  "Returns a function that makes a field safe to be placed in a HTML element"
+  []
+  ;; Rule 1: OWASP Xss prevention cheat sheet.
+  (fn [s]
+    {:value (->> s
+                 (str/replace-str "&"  "&amp;")
+                 (str/replace-str "<"  "&lt;")
+                 (str/replace-str ">"  "&gt;")
+                 (str/replace-str "\"" "&quot;")
+                 (str/replace-str "'"  "&#x27;")
+                 (str/replace-str "/"  "&#x2F;"))}))
+
+
+(defn- convert-non-alphanumeric
+  "Converts non alphanumeric characters using convert-fn"
+  [convert-fn ch]
+  (let [code (int ch)]
+    (if (or (< code 65)
+            (and (> code 90) (< code 97))
+            (> code 122))
+      (convert-fn ch)
+      ch)))
+
+(defn- hex-entity
+  "Returns the HTML hex entity for the given character"
+  [ch]
+  (format "&#x%02X;" (int ch)))
+
+(defn- xss-for-html-attribute
+  "Returns a function that makes a field safe to put into a HTML attribute"
+  []
+  ;; Rule 2: OWASP Xss prevention cheat sheet.
+  (fn [s]
+    {:value (str/map-str (partial convert-non-alphanumeric hex-entity) s)}))
+
+(defn- js-hex-char
+  "Returns the javascript hex format for the given character"
+  [ch]
+  (format "\\x%02X" (int ch)))
+
+(defn- xss-for-js-data
+  "Returns a function that makes a field safe to put into javascript data"
+  []
+  ;; Rule 3: OWASP Xss prevention cheat sheet.
+  (fn [s]
+    {:value (str/map-str (partial convert-non-alphanumeric js-hex-char) s)}))
+
+(defn- css-hex-char
+  "Returns the css hex format for the given character"
+  [ch]
+  (format "\\%02X" (int ch)))
+
+(defn- xss-for-css-value
+  "Returns a function that makes a field safe to put into a css property value"
+  []
+  ;; Rule 4: OWASP Xss prevention cheat sheet.
+  (fn [s]
+    {:value (str/map-str (partial convert-non-alphanumeric css-hex-char) s)}))
+
+(defn- url-hex-char
+  "Returns a url hex encoded character for the given character"
+  [ch]
+  (format "%%%02X" (int ch)))
+
+(defn- xss-for-url
+  "Returns a function that makes a field safe to put into a url"
+  []
+  ;; Rule 5: OWASP Xss prevention cheat sheet.
+  (fn [s]
+    {:value (str/map-str (partial convert-non-alphanumeric url-hex-char) s)}))
+
 (defvar- validation-fns
   {:maxlength maxlength
    :pattern pattern
@@ -130,7 +203,12 @@
    :date check-date
    :url check-url
    :match check-match
-   :boolean get-boolean})
+   :boolean get-boolean
+   :xss->element xss-for-html-element
+   :xss->attribute xss-for-html-attribute
+   :xss->js-data xss-for-js-data
+   :xss->css xss-for-css-value
+   :xss->url xss-for-url})
 
 
 (defn- generate-check-fn
