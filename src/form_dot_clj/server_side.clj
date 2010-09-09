@@ -139,7 +139,8 @@
   "Converts non alphanumeric characters using convert-fn"
   [convert-fn ch]
   (let [code (int ch)]
-    (if (or (< code 65)
+    (if (or (< code 48)
+            (and (> code 57) (< code 65))
             (and (> code 90) (< code 97))
             (> code 122))
       (convert-fn ch)

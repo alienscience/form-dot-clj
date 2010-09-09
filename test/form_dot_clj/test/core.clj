@@ -3,6 +3,7 @@
   (:use clojure.test)
   (:use form-dot-clj.core)
   (:use form-dot-clj.html-controls)
+  (:require [clojure.contrib.string :as str])
   (:require [clj-time.core :as joda]))
 
 (def-field string-field
@@ -62,12 +63,24 @@
   (has-value {"bool-field" "false"} {:bool-field false})
   (has-value {"bool-field" "FALSE"} {:bool-field false}))
 
+(def *all-ascii* (str/map-str char (range 1 128)))
+
 (deftest xss
   (has-value
    {"html-element-field" "&<>\"'/hello"}
    {:html-element-field "&amp;&lt;&gt;&quot;&#x27;&#x2F;hello"})
   (has-value
-   {"html-attribute-field" ""}))
+   {"html-attribute-field" *all-ascii*}
+   {:html-attribute-field "&#x01;&#x02;&#x03;&#x04;&#x05;&#x06;&#x07;&#x08;&#x09;&#x0A;&#x0B;&#x0C;&#x0D;&#x0E;&#x0F;&#x10;&#x11;&#x12;&#x13;&#x14;&#x15;&#x16;&#x17;&#x18;&#x19;&#x1A;&#x1B;&#x1C;&#x1D;&#x1E;&#x1F;&#x20;&#x21;&#x22;&#x23;&#x24;&#x25;&#x26;&#x27;&#x28;&#x29;&#x2A;&#x2B;&#x2C;&#x2D;&#x2E;&#x2F;0123456789&#x3A;&#x3B;&#x3C;&#x3D;&#x3E;&#x3F;&#x40;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x5B;&#x5C;&#x5D;&#x5E;&#x5F;&#x60;abcdefghijklmnopqrstuvwxyz&#x7B;&#x7C;&#x7D;&#x7E;&#x7F;"})
+  (has-value
+   {"js-data-field" *all-ascii*}
+   {:js-data-field "\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0A\\x0B\\x0C\\x0D\\x0E\\x0F\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1A\\x1B\\x1C\\x1D\\x1E\\x1F\\x20\\x21\\x22\\x23\\x24\\x25\\x26\\x27\\x28\\x29\\x2A\\x2B\\x2C\\x2D\\x2E\\x2F0123456789\\x3A\\x3B\\x3C\\x3D\\x3E\\x3F\\x40ABCDEFGHIJKLMNOPQRSTUVWXYZ\\x5B\\x5C\\x5D\\x5E\\x5F\\x60abcdefghijklmnopqrstuvwxyz\\x7B\\x7C\\x7D\\x7E\\x7F"})
+  (has-value
+   {"css-value-field" *all-ascii*}
+   {:css-value-field "\\01\\02\\03\\04\\05\\06\\07\\08\\09\\0A\\0B\\0C\\0D\\0E\\0F\\10\\11\\12\\13\\14\\15\\16\\17\\18\\19\\1A\\1B\\1C\\1D\\1E\\1F\\20\\21\\22\\23\\24\\25\\26\\27\\28\\29\\2A\\2B\\2C\\2D\\2E\\2F0123456789\\3A\\3B\\3C\\3D\\3E\\3F\\40ABCDEFGHIJKLMNOPQRSTUVWXYZ\\5B\\5C\\5D\\5E\\5F\\60abcdefghijklmnopqrstuvwxyz\\7B\\7C\\7D\\7E\\7F"})
+  (has-value
+   {"url-value-field" *all-ascii*}
+   {:url-value-field "%01%02%03%04%05%06%07%08%09%0A%0B%0C%0D%0E%0F%10%11%12%13%14%15%16%17%18%19%1A%1B%1C%1D%1E%1F%20%21%22%23%24%25%26%27%28%29%2A%2B%2C%2D%2E%2F0123456789%3A%3B%3C%3D%3E%3F%40ABCDEFGHIJKLMNOPQRSTUVWXYZ%5B%5C%5D%5E%5F%60abcdefghijklmnopqrstuvwxyz%7B%7C%7D%7E%7F"}))
 
 (defn validate-ok
   "Checks that the given parameters validate with no errors"
