@@ -4,6 +4,7 @@
   (:use compojure.core, ring.adapter.jetty)
   (:require [compojure.route :as route])
   (:use hiccup.core)
+  (:use [hiccup.page-helpers :only (include-css)])
   (:use form-dot-clj.core)
   (:use form-dot-clj.jquery-tools))
 
@@ -44,12 +45,9 @@
   (html
    [:head
     [:title "Minimal Sign-up Form"]
-    [:link {:rel "stylesheet"
-            :type "text/css"
-            :href "http://static.flowplayer.org/tools/css/standalone.css"}]
-    [:link {:rel "stylesheet"
-            :type "text/css"
-            :href "http://static.flowplayer.org/tools/demos/validator/css/form.css"}]
+    (ph/include-css
+     "http://static.flowplayer.org/tools/css/standalone.css"
+     "http://static.flowplayer.org/tools/demos/validator/css/form.css")
     (include-js signup "myform")]
    [:body
     [:form#myform {:action "/" :method "post"}

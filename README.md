@@ -1,10 +1,10 @@
 
 # form-dot-clj #
 
-A library for handling the display and validation of forms. Supports HTML5 forms, javascript validation and plain HTML.
+A library for handling the display and validation of forms. Supports XSS prevention, HTML5 forms, javascript validation and plain HTML.
 
 This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form) for use with Leiningen/Maven
-     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.2"]]
+     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.3"]]
 
 ## Example ##
 
@@ -172,6 +172,26 @@ Checks that a string appears to be a valid URL *(client, server)*.
 
     [:boolean]
 Extracts a boolean from a string. A missing field, empty strings, and case insensitive matches to "no" or "false" are converted to `false`. Anything else is converted `true` *(server)*.
+
+    [:xss->element]
+
+Makes a field safe to be placed in a HTML element. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.231_-_HTML_Escape_Before_Inserting_Untrusted_Data_into_HTML_Element_Content).
+
+    [:xss->attribute]
+    
+Makes a field safe to put into a HTML attribute. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.232_-_Attribute_Escape_Before_Inserting_Untrusted_Data_into_HTML_Common_Attributes).
+
+    [:xss->js-data]
+    
+Makes a field safe to put into javascript data. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.233_-_JavaScript_Escape_Before_Inserting_Untrusted_Data_into_HTML_JavaScript_Data_Values).
+
+    [:xss->css]
+    
+Makes a field safe to put into a css property value. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.234_-_CSS_Escape_Before_Inserting_Untrusted_Data_into_HTML_Style_Property_Values).
+
+    [:xss->url]
+    
+Makes a field safe to put into a url. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.235_-_URL_Escape_Before_Inserting_Untrusted_Data_into_HTML_URL_Parameter_Values).
 
 ## Controls ##
 

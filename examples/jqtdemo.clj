@@ -4,6 +4,7 @@
   (:use compojure.core, ring.adapter.jetty)
   (:require [compojure.route :as route])
   (:use hiccup.core)
+  (:use [hiccup.page-helpers :only (include-css)])
   (:use form-dot-clj.core)
   (:use form-dot-clj.jquery-tools))
 
@@ -46,18 +47,15 @@
   :url               (textbox home-page)
   )
 
-(defn stylesheet [href]
-  (html
-   [:link {:rel "stylesheet" :type "text/css" :href href}]))
-
 (defn show-form [params errors]
   (html
    [:head
     [:title "Demo Form"]
-    (stylesheet "http://static.flowplayer.org/tools/css/standalone.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/validator/css/form.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css")
-    (stylesheet "http://static.flowplayer.org/tools/demos/rangeinput/css/skin1.css")
+    (include-css
+     "http://static.flowplayer.org/tools/css/standalone.css"
+     "http://static.flowplayer.org/tools/demos/validator/css/form.css"
+     "http://static.flowplayer.org/tools/demos/dateinput/css/skin1.css"
+     "http://static.flowplayer.org/tools/demos/rangeinput/css/skin1.css")
     [:style {:type "text/css"}
      ".slider { width: 200px;}"
      ".range {display block; float: none;}"]
@@ -80,7 +78,7 @@
   (route/not-found
    (html [:h1 "Page not found"])))
 
-(def server (atom nil))
+(defonce server (atom nil))
 
 (defn stop []
   (if-not (nil? @server)

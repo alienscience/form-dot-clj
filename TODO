@@ -1,0 +1,4 @@
+
+1) Generate .js from datastructures
+2) Move to :require
+3) Have :dest-html, :dest-js protection
