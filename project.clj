@@ -1,4 +1,4 @@
-(defproject uk.org.alienscience/form-dot-clj "0.0.2"
+(defproject uk.org.alienscience/form-dot-clj "0.0.3"
   :description "HTML form display and validation."
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
