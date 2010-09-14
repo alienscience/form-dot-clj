@@ -175,23 +175,23 @@ Extracts a boolean from a string. A missing field, empty strings, and case insen
 
     [:xss->element]
 
-Makes a field safe to be placed in a HTML element. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.231_-_HTML_Escape_Before_Inserting_Untrusted_Data_into_HTML_Element_Content).
+Makes a field safe to be placed in a HTML element. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.231_-_HTML_Escape_Before_Inserting_Untrusted_Data_into_HTML_Element_Content) *(server)*.
 
     [:xss->attribute]
     
-Makes a field safe to put into a HTML attribute. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.232_-_Attribute_Escape_Before_Inserting_Untrusted_Data_into_HTML_Common_Attributes).
+Makes a field safe to put into a HTML attribute. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.232_-_Attribute_Escape_Before_Inserting_Untrusted_Data_into_HTML_Common_Attributes) *(server)*.
 
     [:xss->js-data]
     
-Makes a field safe to put into javascript data. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.233_-_JavaScript_Escape_Before_Inserting_Untrusted_Data_into_HTML_JavaScript_Data_Values).
+Makes a field safe to put into javascript data. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.233_-_JavaScript_Escape_Before_Inserting_Untrusted_Data_into_HTML_JavaScript_Data_Values) *(server)*.
 
     [:xss->css]
     
-Makes a field safe to put into a css property value. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.234_-_CSS_Escape_Before_Inserting_Untrusted_Data_into_HTML_Style_Property_Values).
+Makes a field safe to put into a css property value. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.234_-_CSS_Escape_Before_Inserting_Untrusted_Data_into_HTML_Style_Property_Values) *(server)*.
 
     [:xss->url]
     
-Makes a field safe to put into a url. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.235_-_URL_Escape_Before_Inserting_Untrusted_Data_into_HTML_URL_Parameter_Values).
+Makes a field safe to put into a url. For more information see [the OWASP cheat sheet](http://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet#RULE_.235_-_URL_Escape_Before_Inserting_Untrusted_Data_into_HTML_URL_Parameter_Values) *(server)*.
 
 ## Controls ##
 
