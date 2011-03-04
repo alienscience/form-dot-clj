@@ -14,6 +14,14 @@
     (if (> (count s) length)
       {:error "Too long."}
       {})))
+ 
+(defn- minlength
+  "Performs a minimum length check on a string."
+  [length]
+  (fn [s]
+    (if (< (count s) length)
+      {:error "Too short."}
+      {})))
   
 (defn- pattern
   "Performs a pattern match on a string. Pattern is a string.
@@ -196,6 +204,7 @@
 
 (defvar- validation-fns
   {:maxlength maxlength
+   :minlength minlength
    :pattern pattern
    :no-match no-match
    :integer check-integer
