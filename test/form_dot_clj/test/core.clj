@@ -8,6 +8,7 @@
 
 (def-field string-field
   [:maxlength 10]
+  [:minlength 4]
   [:pattern "[a-z]+" "pattern error"]
   [:match #"moo" "match error"]
   [:no-match #"cow" "no-match error"])
@@ -48,8 +49,8 @@
     (is (= validated expected-values) "Expected values")))
   
 (deftest conversion
-  (has-value {"string-field" "moo"}
-             {:string-field "moo"})
+  (has-value {"string-field" "moot"}
+             {:string-field "moot"})
   (has-value {"int-field" "2"}
              {:int-field 2})
   (has-value {"float-field" "-0.8"}
@@ -95,7 +96,7 @@
     (is (= errors expected-errs) "Expected errors")))
   
 (deftest validation
-  (validate-ok {"string-field" "moo"})
+  (validate-ok {"string-field" "moot"})
   (validate-ok {"int-field" "10"})
   (validate-ok {"int-field" "-1"})
   (validate-ok {"float-field" "2.5"})
@@ -118,6 +119,8 @@
                   {:string-field "match error"})
   (validate-error {"string-field" "moocow"}
                   {:string-field "no-match error"})
+  (validate-error {"string-field" "moo"}
+                  {:string-field "Too short."})
   (validate-error {"int-field" "moo"}
                   {:int-field "integer error"})
   (validate-error {"int-field" "11"}

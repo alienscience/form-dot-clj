@@ -4,7 +4,7 @@
 A library for handling the display and validation of forms. Supports XSS prevention, HTML5 forms, javascript validation and plain HTML.
 
 This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form) for use with Leiningen/Maven
-     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.3"]]
+     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.4"]]
 
 ## Example ##
 
@@ -148,6 +148,9 @@ The following validation tags are available for use with `def-field`
 
     [:maxlength x]
 Sets the maximum character length for a field *(client,server)*.
+
+    [:minlength x]
+Sets the minimum character length for a field *(server)*.
 
     [:pattern pat error-message]
 A string must fully match the javascript regular expression, pat, (given as a string) or error-message will be returned *(client,server)*.
