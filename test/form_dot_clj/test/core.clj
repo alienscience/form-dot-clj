@@ -8,7 +8,7 @@
 
 (def-field string-field
   [:maxlength 10]
-  [:minlength 4]
+  [:minlength 4 "too short error"]
   [:pattern "[a-z]+" "pattern error"]
   [:match #"moo" "match error"]
   [:no-match #"cow" "no-match error"])
@@ -120,7 +120,7 @@
   (validate-error {"string-field" "moocow"}
                   {:string-field "no-match error"})
   (validate-error {"string-field" "moo"}
-                  {:string-field "Too short."})
+                  {:string-field "too short error"})
   (validate-error {"int-field" "moo"}
                   {:int-field "integer error"})
   (validate-error {"int-field" "11"}

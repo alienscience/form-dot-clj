@@ -17,10 +17,10 @@
  
 (defn- minlength
   "Performs a minimum length check on a string."
-  [length]
+  [length error-message]
   (fn [s]
     (if (< (count s) length)
-      {:error "Too short."}
+      {:error error-message}
       {})))
   
 (defn- pattern
