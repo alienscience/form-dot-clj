@@ -1,7 +1,7 @@
 
 # form-dot-clj #
 
-A library for handling the display and validation of forms. Supports XSS prevention, HTML5 forms, javascript validation and plain HTML.
+A library for handling the display and validation of HTML forms. The library is designed to be used with Ring and supports XSS prevention, HTML5 forms, javascript validation and plain HTML.
 
 This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form) for use with Leiningen/Maven
      :dependencies [[uk.org.alienscience/form-dot-clj "0.0.4"]]
@@ -36,6 +36,19 @@ Generating and checking HTML forms is boring and its easy to make small mistakes
 Form-dot-clj is a Clojure library that attempts to remove the drudgery from form display, validation, type conversion and error reporting. The library is extendable and an example is included where controls based on [jquery tools](http://flowplayer.org/tools/release-notes/index.html#form) are used to provide HTML5, javascript and server side validation from the same declarations.
 
 This library should be usable with any HTML templating system and also provides fine grained control of the HTML that is generated. The examples directory contains a file `signup-doc.clj` that shows different levels of HTML generation.
+
+## Overview ##
+
+This library takes the following approaches to validation:
+- It assumes the Ring request has a parameter map containing string keys. Anything with a string key has not been validated. When data has been validated, it has :keyword keys.
+- The validation is declarative so that it can be used to generate Javascript or HTML5 form checks if needed.
+- Although its straightforward to lookup the correct regular expressions to check email addresses and prevent various attacks, not everybody does this. Form-dot-clj comes with various, optional, pre-defined checks and attempts to follow best practice.
+- Posted data comes in as strings. The library allows for, optional, type conversion. Validation can be done on both the string and on the type converted data.
+- All validations end up in globally accessible def forms. This is to encourage the reuse of validations across namespaces so that, for example, a userid on one form is validated identically to a userid on another. 
+- You can, optionally, use functions to validate form posts and these functions can validate multiple fields together.
+- If you want to follow the principle of "Do Not Repeat Yourself" you can, optionally, use Form-dot-clj to build HTML forms. So for instance, maxlength only has to be specified once for a field and it will be used for validation and in the resulting HTML.
+- The library includes, optional, XSS detection. If a form submission contains an XSS attack then it is prudent not to accept any of the data in the submission.
+- The library comes with a helper function `on-post` that handles the common submit, validate, display errors and commit workflow that occurs with when handling HTML forms. Use of this function is optional.
 
 ## Walkthrough ##
 
