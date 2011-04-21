@@ -41,12 +41,25 @@
   :url-value-field (textbox for-url)
   )
 
+(defn- keyword-keys
+  "Converts a map to have keyword keys"
+  [m]
+  (into {} 
+        (map (fn [[a b]]
+               [(keyword a) b])
+             m)))
+
 (defn has-value
   "Checks that the given param map converts to the given value
    map"
   [params expected-values]
-  (let [[validated errors] (validate test-form params)]
-    (is (= validated expected-values) "Expected values")))
+  (let [kw-params (keyword-keys params)
+        [validated errors] (validate test-form params)
+        [kw-validated kw-errors] (validate test-form kw-params)]
+    (is (= validated expected-values) "Expected values (string keys)")
+    (is (= kw-validated expected-values) "Expected values (keyword keys")
+    (is (empty? errors))
+    (is (empty? kw-errors))))
   
 (deftest conversion
   (has-value {"string-field" "moot"}
@@ -63,6 +76,7 @@
   (has-value {"bool-field" "no"} {:bool-field false})
   (has-value {"bool-field" "false"} {:bool-field false})
   (has-value {"bool-field" "FALSE"} {:bool-field false}))
+
 
 (def *all-ascii* (str/map-str char (range 1 128)))
 

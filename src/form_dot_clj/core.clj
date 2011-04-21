@@ -88,7 +88,8 @@
   [value-map error-map control-tuple params]
   (let [control-key (first control-tuple)
         control (second control-tuple)
-        param (-> control :name params)
+        control-name (control :name)
+        param (or (params control-name) (params control-key))
         required (control :required)]
     (if (or (nil? param)
             (= (.length param) 0))
@@ -114,7 +115,7 @@
       (let [[new-values new-errors]
             (check-control value-map error-map (first todo) params)]
         (recur new-values new-errors (rest todo))))))
-  
+
 (defn validate
   "Checks the values posted to the given controls.
    Returns a two entry vector containing a map of validated values

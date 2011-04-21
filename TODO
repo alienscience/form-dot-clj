@@ -1,4 +1,9 @@
 
-1) Generate .js from datastructures
-2) Move to :require
-3) Have :dest-html, :dest-js protection
+
+1. Look at jquery validation (or some other library)
+3. Separate out js-dot-clj
+4. See if there is a better way to do date input
+   [:date "d mmm yyyy"  "1900-01-01"  "2010-8-10" 
+           "Must be a date betweenn xxx and xxx"
+5. Have separate example app??
+
