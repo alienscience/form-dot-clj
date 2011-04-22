@@ -4,7 +4,7 @@
 A library for handling the display and validation of HTML forms. The library is designed to be used with Ring and supports XSS prevention, HTML5 forms, javascript validation and plain HTML.
 
 This and other form validation libraries are available on [clojars](http://clojars.org/search?q=form) for use with Leiningen/Maven
-     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.4"]]
+     :dependencies [[uk.org.alienscience/form-dot-clj "0.0.5"]]
 
 ## Example ##
 
